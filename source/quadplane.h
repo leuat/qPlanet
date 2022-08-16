@@ -7,31 +7,16 @@
 #include <QVector>
 #include "source/misc/SimplexNoise.h"
 #include "source/planetdata.h"
+#include "misc/mesh.h"
 
-struct VertexData
+class QuadPlane : public Mesh
 {
-    QVector3D position;
-    QVector3D normal;
-    QVector2D texCoord;
-};
-
-class QuadPlane : protected QOpenGLFunctions
-{
-private:
-      QVector<VertexData> data;
-      QVector<GLushort> indices;
-
-      QOpenGLBuffer arrayBuf;
-      QOpenGLBuffer indexBuf;
 public:
 
       void generatePlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int n, PlanetData& pd);
 
 
-      //! [2]
-      void Render(QOpenGLShaderProgram *program);
 
-      void Bind();
 
 
 

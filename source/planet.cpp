@@ -68,7 +68,7 @@ void Planet::Render(QMatrix4x4 projection, QOpenGLShaderProgram *program)
 
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(0.0, 0.0, -3.0);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix

@@ -30,7 +30,7 @@ void main()
     float t_bottom = 1.78;
     float t_medium = 1.82;
     float t_top = 1.87;
-    float w = 30;
+    float w = 30.0;
     float n = clamp((dot(v_normal, normalize(v_pos))),0.0,1.0);
     color = bottom*exp(-(pow((v_height-t_bottom)*w,2.0)));
     color += medium*exp(-(pow((v_height-t_medium)*w,2.0)));
