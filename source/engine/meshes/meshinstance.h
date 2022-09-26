@@ -2,7 +2,7 @@
 #define MESHINSTANCE_H
 
 #include "mesh.h"
-#include "entity.h"
+#include "source/engine/entity.h"
 
 class MeshInstance : public Entity
 {

@@ -5,9 +5,9 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 #include <QVector>
-#include "source/misc/SimplexNoise.h"
-#include "source/planetdata.h"
-#include "misc/mesh.h"
+#include "source/engine/misc/SimplexNoise.h"
+#include "source/engine/meshes/planetdata.h"
+#include "source/engine/meshes/mesh.h"
 
 class QuadPlane : public Mesh
 {

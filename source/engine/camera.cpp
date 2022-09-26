@@ -3,10 +3,10 @@
 #include <math.h>
 #include <QMatrix2x2>
 #include <QVector2D>
-
+#include "sdata.h"
 Camera::Camera()
 {
-
+    m_up = QVector3D(0,-1,0);
 }
 
 void Camera::TranslateXY(QVector3D &delta) {
@@ -100,6 +100,9 @@ void Camera::setupViewmatrix() {
     m_viewMatrix.setToIdentity();
     m_viewMatrix.lookAt(m_position, m_target, m_up);
     m_invVP = (m_projection*m_viewMatrix).inverted();
+
+    SData::sdata.s_eye = m_position;
+    SData::sdata.s_eye_direction = (m_position-m_target).normalized();
 
 }
 

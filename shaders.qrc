@@ -8,5 +8,7 @@
         <file>shaders/screen.frag</file>
         <file>shaders/frag_flat.glsl</file>
         <file>shaders/vert_flat.glsl</file>
+        <file>shaders/frag_texture.glsl</file>
+        <file>shaders/vert_texture.glsl</file>
     </qresource>
 </RCC>

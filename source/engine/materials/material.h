@@ -14,16 +14,18 @@ public:
     QOpenGLTexture *normal_map = nullptr;
     QOpenGLTexture *parallax_map = nullptr;
 
-
-    float uvScale = 1.0;
+    QVector2D uvScale = QVector2D(1,1);
     float normalScale = 1.0;
     float specular = 1.0;
-    float shininess = 1.0;
+    float shininess = 25.0;
     QVector3D color = QVector3D(1,1,1);
     void Link(QString vert, QString frag);
 
     Material();
 
+
+    void setDefaults(const QMatrix4x4& mvp, const QMatrix3x3& rot);
+    void SetEye();
 
 
     virtual void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) = 0;
@@ -37,6 +39,13 @@ public:
     MaterialFlat();
     void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
 };
+
+class MaterialTexture : public Material {
+public:
+    MaterialTexture(QString textureFile, QVector2D scale);
+    void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
+};
+
 
 
 #endif // MATERIAL_H

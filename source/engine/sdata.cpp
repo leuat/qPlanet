@@ -24,4 +24,5 @@ QSharedPointer<QOpenGLShaderProgram> SData::LinkShader(QString vert, QString fra
 void SData::CompileShaders()
 {
     shaderPrograms["flat"] = LinkShader(":/shaders/vert_flat.glsl",":/shaders/frag_flat.glsl");
+    shaderPrograms["texture"] = LinkShader(":/shaders/vert_texture.glsl",":/shaders/frag_texture.glsl");
 }

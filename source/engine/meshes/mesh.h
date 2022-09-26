@@ -1,7 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "entity.h"
+#include "source/engine/entity.h"
 
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>

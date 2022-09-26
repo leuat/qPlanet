@@ -1,5 +1,5 @@
 #include "planetdata.h"
-#include "source/qnoise.h"
+#include "source/engine/misc/qnoise.h"
 #include <math.h>
 PlanetData::PlanetData()
 {

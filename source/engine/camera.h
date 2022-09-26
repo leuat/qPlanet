@@ -3,7 +3,7 @@
 
 #include <QMatrix4x4>
 #include <QVector3D>
-#include "source/misc/entity.h"
+#include "source/engine/entity.h"
 
 class Camera : public Entity
 {
@@ -12,7 +12,7 @@ public:
     QMatrix4x4 m_matrix;
     QMatrix4x4 m_viewMatrix, m_viewMatrixInv, m_projection,  m_rotMatrix, m_invVP;
     float m_fov = 80;
-    float m_aspect = 1;
+    float m_aspect = 1.8;
 
 
     Camera();

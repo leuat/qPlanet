@@ -16,44 +16,69 @@ macx{
 
 SOURCES += \
     source/engine/camera.cpp \
+    source/engine/entity.cpp \
+    source/engine/eriswidget.cpp \
+    source/engine/materials/material.cpp \
+    source/engine/materials/materialfactory.cpp \
+    source/engine/meshes/mesh.cpp \
+    source/engine/meshes/meshfactory.cpp \
+    source/engine/meshes/meshinstance.cpp \
+    source/engine/meshes/meshobject.cpp \
+    source/engine/meshes/planet.cpp \
+    source/engine/meshes/planetdata.cpp \
+    source/engine/meshes/quadplane.cpp \
+    source/engine/misc/SimplexNoise.cpp \
+    source/engine/misc/objloader.cpp \
+    source/engine/misc/qnoise.cpp \
+    source/engine/misc/util.cpp \
+    source/engine/output/postprocess.cpp \
+    source/engine/sdata.cpp \
+    source/engine/widget/glwidget.cpp \
+    source/engine/world.cpp \
     source/main.cpp \
     source/mainwidget.cpp \
-    source/materials/materialfactory.cpp \
-    source/mesh/meshfactory.cpp \
-    source/misc/SimplexNoise.cpp \
-    source/misc/entity.cpp \
-    source/materials/material.cpp \
-    source/misc/mesh.cpp \
-    source/misc/meshinstance.cpp \
-    source/misc/postprocess.cpp \
-    source/misc/sdata.cpp \
-    source/planet.cpp \
-    source/planetdata.cpp \
-    source/qnoise.cpp \
-    source/quadplane.cpp \
-    source/world.cpp
-    source/engine/camera.cpp
+    source/misc/cinifile.cpp \
+    source/mymeshes/rotboxtest.cpp
 
 HEADERS += \
     source/engine/camera.h \
+    source/engine/entity.h \
+    source/engine/eriswidget.h \
+    source/engine/materials/material.h \
+    source/engine/materials/materialfactory.h \
+    source/engine/mesh.h \
+    source/engine/meshes/mesh.h \
+    source/engine/meshes/meshfactory.h \
+    source/engine/meshes/meshinstance.h \
+    source/engine/meshes/meshobject.h \
+    source/engine/meshes/planet.h \
+    source/engine/meshes/planetdata.h \
+    source/engine/meshes/quadplane.h \
+    source/engine/meshfactory.h \
+    source/engine/meshinstance.h \
+    source/engine/misc/SimplexNoise.h \
+    source/engine/misc/objloader.h \
+    source/engine/misc/qnoise.h \
+    source/engine/misc/random.h \
+    source/engine/misc/util.h \
+    source/engine/output/postprocess.h \
+    source/engine/sdata.h \
+    source/engine/widget/glwidget.h \
+    source/engine/world.h \
     source/mainwidget.h \
-    source/materials/materialfactory.h \
-    source/mesh/meshfactory.h \
-    source/misc/entity.h \
-    source/materials/material.h \
-    source/misc/mesh.h \
-    source/misc/meshinstance.h \
-    source/misc/postprocess.h \
-    source/misc/sdata.h \
-    source/planet.h \
-    source/mainwidget.h \
-    source/misc/SimplexNoise.h \
-    source/planet.h \
-    source/planetdata.h \
-    source/qnoise.h \
-    source/quadplane.h \
-    source/world.h
-    source/engine/camera.h
+    source/misc/cinifile.h \
+    source/mymeshes/rotboxtest.h
+
+RESOURCES += \
+    shaders.qrc \
+    textures.qrc
+
+# install
+#target.path = $$[QT_INSTALL_EXAMPLES]/opengl/p
+#INSTALLS += target
+
+
+HEADERS += \
 
 RESOURCES += \
     shaders.qrc \

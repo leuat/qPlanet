@@ -55,10 +55,10 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 #include <QVector>
-#include "source/misc/SimplexNoise.h"
+#include "source/engine/misc/SimplexNoise.h"
 
-#include "source/planetdata.h"
-#include "source/quadplane.h"
+#include "source/engine/meshes/planetdata.h"
+#include "source/engine/meshes/quadplane.h"
 #include <QSharedPointer>
 class Planet
 {

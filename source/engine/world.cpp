@@ -1,11 +1,11 @@
 #include "world.h"
-#include "source/mesh/meshfactory.h"
+#include "source/engine/meshes/meshfactory.h"
 
 
 World::World()
 {
     m_root = QSharedPointer<Entity>(new Entity());
-    m_entityList["root"] = m_root;
+    m_entityList["root"] = m_root.get();
     m_camera.m_position = QVector3D(0,0,-5);
     m_camera.m_target = QVector3D(0,0,0);
 }
@@ -22,11 +22,11 @@ void World::Render()
     }*/
     m_camera.setupViewmatrix();
     m_root->Render(m_camera.m_projection*m_camera.m_viewMatrix);
-    m_camera.Update();
-    m_camera.Move(0.1);
+    m_camera.UpdatePhysics();
+    m_camera.MovePhysics(0.1);
 }
 
-MeshInstance* World::AddMeshInstance(QString name, QString parent, QVector3D pos, QString mesh, Material *material)
+MeshInstance* World::AddMeshInstance(MeshInstance* mi_org, QString name, QString parent, QVector3D pos, QString mesh, Material *material)
 {
     if (!m_entityList.contains(parent)) {
         qDebug() << "Error in World::AddMeshInstance: cannot find parent "+parent;
@@ -37,9 +37,16 @@ MeshInstance* World::AddMeshInstance(QString name, QString parent, QVector3D pos
         return nullptr;
     }
     auto p = m_entityList[parent];
-    auto mi = MeshInstanceFactory::Create(name,pos,m_meshes[mesh].get(),material);
+    auto mi = MeshInstanceFactory::Create(mi_org, name,pos,m_meshes[mesh].get(),material);
 
     m_entityList[parent]->m_children.append(QSharedPointer<MeshInstance>(mi));
-    m_entityList[name] = QSharedPointer<MeshInstance>(mi);
+    m_entityList[name] = mi;
     return mi;
+}
+
+void World::Update()
+{
+    for (auto& n:m_entityList.keys()) {
+        m_entityList[n]->Update();
+    }
 }

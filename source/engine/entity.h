@@ -3,8 +3,8 @@
 
 #include <QVector3D>
 #include <QMatrix4x4>
-#include "source/misc/mesh.h"
-#include "source/materials/material.h"
+#include "source/engine/meshes/mesh.h"
+#include "source/engine/materials/material.h"
 #include <QSharedPointer>
 class Entity
 {
@@ -24,7 +24,7 @@ public:
     float moveUpdown = 0;
 
 
-    void Update() {
+    void UpdatePhysics() {
         auto dir = (m_target-m_position).normalized();
         auto side = QVector3D::crossProduct(m_up,dir).normalized();
         m_acc = moveForward*dir + moveSide*side + moveUpdown*m_up;
@@ -32,7 +32,7 @@ public:
 
 
 
-    void Move(double dt) {
+    void MovePhysics(double dt) {
         m_position+=m_vel*dt;
         m_target+=m_vel*dt;
         m_vel +=m_acc;
@@ -41,7 +41,7 @@ public:
 
     }
 
-    void Accelerate(QVector3D dir) {
+    void AcceleratePhysics(QVector3D dir) {
         m_acc+=dir/m_mass;
     }
 
@@ -50,6 +50,11 @@ public:
 //    void Render();
     QVector<QSharedPointer<Entity>> m_children;
     Entity();
+
+
+    virtual void Update() {}
+    virtual void Init() {}
+
 
     QMatrix4x4 getMV() {
         QMatrix4x4 matrix;
