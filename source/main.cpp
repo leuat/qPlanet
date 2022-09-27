@@ -50,7 +50,6 @@
 
 #include <QApplication>
 #include <QLabel>
-#include <iostream>
 #include <QSurfaceFormat>
 //#include <omp.h>
 #ifndef QT_NO_OPENGL

@@ -49,6 +49,7 @@ void MainWidget::Init()
 
 void MainWidget::Update()
 {
+    ErisWidget::Update();
     SData::sdata.time+=1;
 
     float r = 1000;

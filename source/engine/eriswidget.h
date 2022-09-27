@@ -54,7 +54,7 @@ protected:
     void initTextures();
     virtual void initMeshes();
     virtual void Init() {}
-    virtual void Update() {}
+    virtual void Update();
     Entity player;
     PostProcess pp;
 

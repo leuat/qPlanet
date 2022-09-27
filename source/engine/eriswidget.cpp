@@ -50,7 +50,6 @@ void ErisWidget::timerEvent(QTimerEvent *)
     // Decrease angular speed (friction)
     angularSpeed *= 0.99;
     SData::sdata.time+=1;
-    qDebug() << "TIMER";
     // Stop rotation when speed goes below threshold
     if (angularSpeed < 0.01) {
         angularSpeed = 0.0;
@@ -136,6 +135,11 @@ void ErisWidget::initMeshes()
     world->m_meshes["box"] = QSharedPointer<MeshBox>(new MeshBox(1,2));
 }
 
+void ErisWidget::Update() {
+    m_mx*=0.9;
+
+}
+
 //! [5]
 void ErisWidget::resizeGL(int width, int height)
 {
@@ -196,6 +200,19 @@ void ErisWidget::keyPressEvent(QKeyEvent* e)
         world->m_camera.moveSide = -speed;
     if (e->key()==Qt::Key_A)
         world->m_camera.moveSide = speed;
+
+    if (e->key()==Qt::Key_E)
+        world->m_camera.rotSide = -speed;
+    if (e->key()==Qt::Key_Q)
+        world->m_camera.rotSide = speed;
+
+
+    if (e->key()==Qt::Key_Space)
+        world->m_camera.moveUpdown = -speed;
+    if (e->key()==Qt::Key_C)
+        world->m_camera.moveUpdown = speed;
+
+
 }
 
 void ErisWidget::keyReleaseEvent(QKeyEvent *e)
@@ -204,7 +221,14 @@ void ErisWidget::keyReleaseEvent(QKeyEvent *e)
         world->m_camera.moveForward = 0;
     if (e->key()==Qt::Key_D || e->key()==Qt::Key_A)
       world->m_camera.moveSide = 0;
-//    world->m_camera.moveUpdown = 0;
+    if (e->key()==Qt::Key_E || e->key()==Qt::Key_Q) {
+        world->m_camera.rotSide = 0;
+    }
+    if (e->key()==Qt::Key_C || e->key()==Qt::Key_Space) {
+        world->m_camera.moveUpdown = 0;
+    }
+
+
 }
 
 bool ErisWidget::eventFilter(QObject *obj, QEvent *event)
@@ -220,7 +244,6 @@ bool ErisWidget::eventFilter(QObject *obj, QEvent *event)
             m_isStart = false;
         }
         m_mx +=(m_mousePos-m_prevPos);
-        m_mx*=0.9;
  //       world->m_camera.RotateHorisontal(m_mx.x());
     }
     return false;

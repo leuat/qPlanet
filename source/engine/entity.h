@@ -18,9 +18,12 @@ public:
 
     QVector3D m_acc = QVector3D(0,0,0);
     QVector3D m_vel = QVector3D(0,0,0);
+    float m_rotAcc = 0;
+    float m_rotVel = 0;
     float speedDampening = 0.9;
     float moveForward = 0;
     float moveSide = 0;
+    float rotSide = 0;
     float moveUpdown = 0;
 
 
@@ -28,6 +31,12 @@ public:
         auto dir = (m_target-m_position).normalized();
         auto side = QVector3D::crossProduct(m_up,dir).normalized();
         m_acc = moveForward*dir + moveSide*side + moveUpdown*m_up;
+
+        m_rotAcc = rotSide;
+
+
+
+
     }
 
 
@@ -38,6 +47,14 @@ public:
         m_vel +=m_acc;
         m_vel*=speedDampening;
         m_acc = QVector3D(0,0,0);
+
+        m_rotVel+=m_rotAcc;
+        m_rotVel*=speedDampening;
+
+        m_up = QQuaternion::fromAxisAndAngle((m_target-m_position).normalized(),m_rotVel)*m_up;
+
+
+        m_rotAcc = 0;
 
     }
 

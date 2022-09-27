@@ -12,7 +12,11 @@ struct VertexData
     QVector3D normal;
     QVector3D position;
     QVector2D texCoord;
+    QVector3D binormal;
+    QVector3D tangent;
+
 };
+
 
 class Mesh
 {
@@ -22,6 +26,8 @@ public:
 
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
+
+    bool usesTangent = false;
 
     void Render(QOpenGLShaderProgram *program);
 

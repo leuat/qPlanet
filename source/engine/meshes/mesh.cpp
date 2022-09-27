@@ -35,6 +35,17 @@ void Mesh::Render(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, Q_OFFSETOF(VertexData,texCoord), 2, sizeof(VertexData));
 
 
+    if (usesTangent) {
+        int tanLoc = program->attributeLocation("a_tangent");
+        program->enableAttributeArray(tanLoc);
+        program->setAttributeBuffer(tanLoc, GL_FLOAT, Q_OFFSETOF(VertexData, tangent), 3, sizeof(VertexData));
+
+        int biLoc = program->attributeLocation("a_binormal");
+        program->enableAttributeArray(biLoc);
+        program->setAttributeBuffer(biLoc, GL_FLOAT, Q_OFFSETOF(VertexData, binormal), 3, sizeof(VertexData));
+
+    }
+
     // Draw cube geometry using indices from VBO 1
     glDrawElements(GL_TRIANGLES, indices.count(), GL_UNSIGNED_SHORT, nullptr);
 //    qDebug() << indices.count();
