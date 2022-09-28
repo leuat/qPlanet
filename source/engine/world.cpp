@@ -48,5 +48,16 @@ void World::Update()
 {
     for (auto& n:m_entityList.keys()) {
         m_entityList[n]->Update();
+        if (m_entityList[n]->UpdateFn)
+            m_entityList[n]->UpdateFn(m_entityList[n]);
     }
+}
+
+void World::Init()
+{
+    for (auto& n:m_entityList.keys()) {
+        if (m_entityList[n]->InitFn)
+            m_entityList[n]->InitFn(m_entityList[n]);
+    }
+
 }

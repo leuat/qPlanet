@@ -42,15 +42,15 @@ void PostProcess::Draw()
     shaderScreen.bind();
 
 
-
     glBindTexture(GL_TEXTURE_2D, fbo->texture());
+
+    //    fbo->bind();
     //sbuf->bind(b);
-//    fbuf->release();
-    shaderScreen.bind();
+    //    fbuf->release();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-//    qDebug() << "IIIH" << fbuf->textureId();
+    //    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+    //    qDebug() << "IIIH" << fbuf->textureId();
     shaderScreen.setUniformValue("screen", 0 );
     shaderScreen.setUniformValue("CD", CD.x(), CD.y());
     shaderScreen.setUniformValue("barrelScale", barrelScale.x(), barrelScale.y());
@@ -60,19 +60,19 @@ void PostProcess::Draw()
     shaderScreen.setUniformValue("saturation",saturation);
     shaderScreen.setUniformValue("gamma",gamma);
     shaderScreen.setUniformValue("time",time);
-    float s = 1.0;
-    GLfloat vertices[]{ -1.0f*s, -1.0f*s,
-                        1.0f*s, -1.0f*s,
-                        -1.0f*s,  1.0f*s,
-                        1.0f*s, 1.0f*s };
-
+    vao.bind();
+    arrayBuf.bind();
+    indexBuf.bind();
     shaderScreen.enableAttributeArray(0);
-    shaderScreen.setAttributeArray(0, GL_FLOAT, vertices, 2);
-    glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
-    shaderScreen.disableAttributeArray(0);
+    shaderScreen.setAttributeBuffer(0, GL_FLOAT, 0, 2, sizeof(GLfloat)*2);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 
+    shaderScreen.disableAttributeArray(0);
     // release the shader
     shaderScreen.release();
+    indexBuf.release();
+    arrayBuf.release();
+    vao.release();
     time++;
 
 }
@@ -95,5 +95,35 @@ bool PostProcess::InitShaders()
     if (!shaderScreen.link())
         return false;
 
+
+}
+
+void PostProcess::Init()
+{
+    float s = 1.0;
+    GLfloat vertices[]{ -1.0f*s, -1.0f*s,
+                1.0f*s, -1.0f*s,
+                -1.0f*s,  1.0f*s,
+                1.0f*s, 1.0f*s };
+
+    GLushort ind[] {0,1,2, 2,1,3};
+
+    if (vao.create())
+        vao.bind();
+
+    arrayBuf = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+    arrayBuf.create();
+    arrayBuf.bind();
+
+    arrayBuf.allocate(&vertices, 8 * sizeof(GLfloat));
+    arrayBuf.release();
+
+    indexBuf = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
+    indexBuf.create();
+    indexBuf.bind();
+    indexBuf.allocate(ind, 6 * sizeof(GLushort));
+
+    indexBuf.release();
+    vao.release();
 
 }

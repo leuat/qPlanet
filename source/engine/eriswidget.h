@@ -35,7 +35,7 @@ protected:
 
     QPoint m_mousePos;
     QPoint m_prevPos;
-    QPoint m_mx;
+    QPointF m_mx;
     bool m_isStart = true;
 
     void mousePressEvent(QMouseEvent *e) override;
@@ -48,12 +48,16 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
 
+    virtual void PaintGUI() {}
+
     bool eventFilter(QObject *obj, QEvent *event) override;
 
     void initShaders();
     void initTextures();
     virtual void initMeshes();
-    virtual void Init() {}
+    virtual void Init() {
+        world->Init();
+    }
     virtual void Update();
     Entity player;
     PostProcess pp;

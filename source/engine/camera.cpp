@@ -6,7 +6,7 @@
 #include "sdata.h"
 Camera::Camera()
 {
-    m_up = QVector3D(0,-1,0);
+    m_up = QVector3D(0,1,0);
 }
 
 void Camera::TranslateXY(QVector3D &delta) {

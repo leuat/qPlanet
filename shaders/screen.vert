@@ -1,5 +1,7 @@
-attribute vec2 vPosition;
-varying vec2 v_pos;
+#version 330
+
+in vec2 vPosition;
+out vec2 v_pos;
 
 void main()
 {

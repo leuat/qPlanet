@@ -6,15 +6,25 @@
 #include "source/engine/meshes/mesh.h"
 #include "source/engine/materials/material.h"
 #include <QSharedPointer>
+#include <functional>
+
+using EntityUpdateFn = std::function<void(class Entity*)>;
+using EntityInitFn = std::function<void(class Entity*)>;
+
 class Entity
 {
 public:
     QString m_name="";
     double m_mass = 1.0;
+    float time = 0;
+
     QVector3D m_position = QVector3D(0,0,0);
     QVector3D m_target = QVector3D(0,0,0);
     QVector3D m_up = QVector3D(0,1,0);
     QQuaternion m_rotation;
+
+    EntityUpdateFn UpdateFn;
+    EntityInitFn InitFn;
 
     QVector3D m_acc = QVector3D(0,0,0);
     QVector3D m_vel = QVector3D(0,0,0);

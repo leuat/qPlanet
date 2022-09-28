@@ -2,12 +2,15 @@ QT += core gui widgets opengl openglwidgets
 
 TARGET = qtPlanet
 TEMPLATE = app
+QMAKE_CXXFLAGS += -I$$PWD/imgui
+
 
 win32-msvc*{
     QMAKE_CXXFLAGS += -openmp
     QMAKE_LFLAGS += -openmp
     LIBS+=-openmp
 }
+
 macx{
     CONFIG += arm64
     QMAKE_CXXFLAGS += -Xpreprocessor -fopenmp -I/usr/local/include
@@ -15,6 +18,13 @@ macx{
 }
 
 SOURCES += \
+    imgui/ImGuiRenderer.cpp \
+    imgui/QtImGui.cpp \
+    imgui/imgui.cpp \
+    imgui/imgui_demo.cpp \
+    imgui/imgui_draw.cpp \
+    imgui/imgui_tables.cpp \
+    imgui/imgui_widgets.cpp \
     source/engine/camera.cpp \
     source/engine/entity.cpp \
     source/engine/eriswidget.cpp \
@@ -41,6 +51,14 @@ SOURCES += \
     source/mymeshes/rotboxtest.cpp
 
 HEADERS += \
+    imgui/ImGuiRenderer.h \
+    imgui/QtImGui.h \
+    imgui/imconfig.h \
+    imgui/imgui.h \
+    imgui/imgui_internal.h \
+    imgui/imstb_rectpack.h \
+    imgui/imstb_textedit.h \
+    imgui/imstb_truetype.h \
     source/engine/camera.h \
     source/engine/entity.h \
     source/engine/eriswidget.h \

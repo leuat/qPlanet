@@ -3,10 +3,14 @@
 
 #include "mesh.h"
 #include "source/engine/entity.h"
+#include <QVector>
+#include <QString>
+#include <QMap>
 
 class MeshInstance : public Entity
 {
 public:
+    QMap<QString, MaterialData> extraMats;
     MeshInstance();
     Mesh* m_mesh = nullptr;
     Material* m_material = nullptr;

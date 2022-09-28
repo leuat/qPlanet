@@ -1,4 +1,6 @@
-varying vec2 v_pos;
+#version 330
+
+in vec2 v_pos;
 uniform sampler2D screen;
 
 uniform vec2 CD;
@@ -11,7 +13,7 @@ uniform float lamp;
 uniform float saturation;
 uniform float gamma;
 uniform float time;
-
+out vec4 fragColor;
 vec2 bss;
 
 float random (vec2 st) {
@@ -31,9 +33,9 @@ vec2 Dd(vec2 coord)
 
 vec3 gt(in vec2 pr, in vec2 pg, in vec2 pb) {
     vec3 c;
-    c.x = texture2D( screen, pr*0.5 + vec2(0.5,0.5) ).x;
-    c.y = texture2D( screen, pg*0.5 + vec2(0.5,0.5) ).y;
-    c.z = texture2D( screen, pb*0.5 + vec2(0.5,0.5) ).z;
+    c.x = texture( screen, pr*0.5 + vec2(0.5,0.5) ).x;
+    c.y = texture( screen, pg*0.5 + vec2(0.5,0.5) ).y;
+    c.z = texture( screen, pb*0.5 + vec2(0.5,0.5) ).z;
 
     return c;
 }
@@ -44,7 +46,7 @@ void main()
     float s =(exp(-time*0.05));
     s = s + 0.001*random(vec2(time*1.52,0.0));
     bss = barrelScale*vec2(1.0+s*0.3,1.0+s);
-    vec2 PUV = vec2(v_pos.x, (0.0-v_pos.y));
+    vec2 PUV = vec2(v_pos.x, (v_pos.y));
 	PUV = Dd(PUV);
 
     vec2 pr = PUV*(0.85+chromatic);
@@ -93,5 +95,5 @@ void main()
     col = col + vec3(1.0,1.0,1.0)*add*d;
 
 //    col.x = 0.5;
-    gl_FragColor=vec4(col,1);
+    fragColor=vec4(col,1);
  }

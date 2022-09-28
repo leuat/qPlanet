@@ -6,6 +6,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
+#include <QOpenGLVertexArrayObject>
 
 struct VertexData
 {
@@ -23,13 +24,20 @@ class Mesh
 public:
     QVector<VertexData> data;
     QVector<GLushort> indices;
-
+    QOpenGLVertexArrayObject vao;
+    QString name;
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
+    bool isBuilt = false;
+
+    QVector<QSharedPointer<Mesh>> children;
 
     bool usesTangent = false;
 
     void Render(QOpenGLShaderProgram *program);
+
+    void BuildTangentSpace();
+    void BuildNormals();
 
     void Build();
 

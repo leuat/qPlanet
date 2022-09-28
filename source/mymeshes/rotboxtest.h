@@ -8,7 +8,6 @@ class RotBoxTest : public MeshInstance
 {
 public:
     RotBoxTest();
-    float time;
     void Update() override {
         QQuaternion rot = QQuaternion::fromEulerAngles(time*0.3,
                                                        time*0.4,

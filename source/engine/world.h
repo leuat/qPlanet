@@ -21,9 +21,10 @@ public:
 
     Camera m_camera;
 
-    void Render();
     MeshInstance* AddMeshInstance(MeshInstance* mi,QString name, QString parent,QVector3D pos, QString mesh, Material* material);
     void Update();
+    void Init();
+    void Render();
 };
 
 #endif // WORLD_H

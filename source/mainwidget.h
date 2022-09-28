@@ -33,6 +33,8 @@ private:
 
     void initMeshes() override;
 
+    void PaintGUI() override;
+
 
 };
 

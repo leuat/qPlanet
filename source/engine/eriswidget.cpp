@@ -1,5 +1,4 @@
 #include "eriswidget.h"
-
 #include <QMouseEvent>
 
 
@@ -26,7 +25,7 @@ void ErisWidget::mousePressEvent(QMouseEvent *e)
 
 void ErisWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-    // Mouse release position - mouse press position
+ /*   // Mouse release position - mouse press position
     QVector2D diff = QVector2D(e->position()) - mousePressPosition;
 
     // Rotation axis is perpendicular to the mouse position difference
@@ -41,6 +40,7 @@ void ErisWidget::mouseReleaseEvent(QMouseEvent *e)
 
     // Increase angular speed
     angularSpeed += acc;
+    */
 }
 //! [0]
 
@@ -80,7 +80,7 @@ void ErisWidget::initializeGL()
     glEnable(GL_CULL_FACE);
 
     world = new World;
-
+    pp.Init();
     initMeshes();
 
     Init();
@@ -136,7 +136,12 @@ void ErisWidget::initMeshes()
 }
 
 void ErisWidget::Update() {
-    m_mx*=0.9;
+    if (world!=nullptr) {
+        world->m_camera.RotateVertical(m_mx.y()*0.1);
+        world->m_camera.RotateHorisontal(-m_mx.x()*0.1);
+    }
+
+    m_mx*=0.8;
 
 }
 
@@ -150,9 +155,10 @@ void ErisWidget::resizeGL(int width, int height)
 //    aspect = 2;
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 0.01, zFar = 7000.0, fov = 80.0;
+    const qreal zNear = 0.0001, zFar = 700.0, fov = 80.0;
 
-
+    if (world==nullptr)
+        return;
     world->m_camera.m_projection.setToIdentity();
     world->m_camera.m_projection.perspective(fov, aspect, zNear, zFar);
 
@@ -169,22 +175,22 @@ void ErisWidget::paintGL()
 
     pp.StartFBuf();
 
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.0, 0.0, 0.0, 1.0); glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     world->Render();
     glFinish();
     // Calculate aspect ratio
 
 
-  //  QImage fb = fbo->toImage().convertToFormat(QImage::Format_RGB32);
-//    fb.save("/Users/leuat/test.png");
+  //  QImage fb = pp.fbo->toImage().convertToFormat(QImage::Format_RGB32);
+   // fb.save("/Users/leuat/test.png");
     pp.EndFBuf();
     pp.Draw();
     Update();
-    world->m_camera.RotateVertical(-m_mx.y()*0.1);
-    world->m_camera.RotateHorisontal(-m_mx.x()*0.1);
 
+   // glClearColor(0.5,0.1,0,1);
+   // glClear(GL_COLOR_BUFFER_BIT);
+    PaintGUI();
     update();
     //! [6]
 }
@@ -202,15 +208,15 @@ void ErisWidget::keyPressEvent(QKeyEvent* e)
         world->m_camera.moveSide = speed;
 
     if (e->key()==Qt::Key_E)
-        world->m_camera.rotSide = -speed;
-    if (e->key()==Qt::Key_Q)
         world->m_camera.rotSide = speed;
+    if (e->key()==Qt::Key_Q)
+        world->m_camera.rotSide = -speed;
 
 
     if (e->key()==Qt::Key_Space)
-        world->m_camera.moveUpdown = -speed;
-    if (e->key()==Qt::Key_C)
         world->m_camera.moveUpdown = speed;
+    if (e->key()==Qt::Key_C)
+        world->m_camera.moveUpdown = -speed;
 
 
 }
