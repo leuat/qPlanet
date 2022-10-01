@@ -26,7 +26,9 @@ public:
 
 protected:
 
-
+    void AddGirl();
+    void AddCubes();
+    void AddWalls();
 private:
     void Init() override;
     void Update() override;
@@ -34,6 +36,9 @@ private:
     void initMeshes() override;
 
     void PaintGUI() override;
+    void InitMaterials();
+
+
 
 
 };

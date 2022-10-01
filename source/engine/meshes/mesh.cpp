@@ -1,5 +1,7 @@
 #include "mesh.h"
 #include <QOpenGLVertexArrayObject>
+#include "source/engine/misc/SimplexNoise.h"
+#include "source/engine/sdata.h"
 Mesh::Mesh(): indexBuf(QOpenGLBuffer::IndexBuffer)
 
 {
@@ -109,7 +111,7 @@ void Mesh::BuildTangentSpace()
     }
 }
 
-void Mesh::BuildNormals()
+void Mesh::BuildNormals(bool inverted)
 {
     for (auto& d:data)
         d.normal = QVector3D(0,0,0);
@@ -120,6 +122,7 @@ void Mesh::BuildNormals()
         auto v3 = data[indices[i+2]].position;
 
         auto n = QVector3D::crossProduct(v2-v1,v3-v1).normalized();
+        if (inverted) n*=-1;
 
         data[indices[i+0]].normal+=n;
         data[indices[i+1]].normal+=n;
@@ -227,4 +230,78 @@ void MeshBox::generatePlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D 
         }
     }
 //    qDebug() << indices.count()/6 << data.size();
+}
+
+void MeshRoom::Wall(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int n, float h)
+{
+    QVector3D dx = (p2-p1)/(n-1);
+    QVector3D dy = (p4-p1)/(n-1);
+    //var vloc = PoolVector3Array()
+    //   int nt = omp_get_num_threads();
+   // data.resize(n*n);
+    int vcount = data.size();
+
+    QVector<double> grid;
+
+    for (int i=0;i<n;i++) {
+        for (int j=0;j<n;j++) {
+            auto v = i + j*n;
+//            float h = rand(
+        }
+    }
+
+
+
+    for (int i=0;i<n;i++) {
+        for (int j=0;j<n;j++) {
+            auto v = p1 + dx*i + dy*j;
+            VertexData vd;
+            vd.normal = QVector3D::crossProduct(dx,dy).normalized();
+            auto s = v*0.9;
+            vd.position = v + vd.normal*SData::sdata.sn.noise(s.x(),s.y(),s.z())*0.2;
+            vd.texCoord = QVector2D(i,j);
+            data.append(vd);
+        }
+    }
+    for (int i=0;i<n-1;i++) {
+        for (int j=0;j<n-1;j++) {
+            indices.append(vcount+i*n+j);
+            indices.append(vcount+(i+1)*n+j);
+            indices.append(vcount+i*n+j+1);
+
+
+            indices.append(vcount+i*n+j+1);
+            indices.append(vcount+(i+1)*n+j);
+            indices.append(vcount+(i+1)*n+(j+1));
+        }
+    }
+
+//    qDebug() << indices.count()/6 << data.size();
+}
+
+
+MeshRoom::MeshRoom(int n, double scale, int walls)
+{
+    float r = scale*-1;
+    auto p1 = QVector3D(-r,-r,-r);
+    auto p2 = QVector3D(r,-r,-r);
+    auto p3 = QVector3D(r,r,-r);
+    auto p4 = QVector3D(-r,r,-r);
+    auto p5 = QVector3D(-r,-r,r);
+    auto p6 = QVector3D(r,-r,r);
+    auto p7 = QVector3D(r,r,r);
+    auto p8 = QVector3D(-r,r,r);
+    float h= 0;
+    Wall(p4,p3,p2,p1,n,h);
+    Wall(p5,p6,p7,p8,n,h);
+    Wall(p8,p7,p3,p4,n,h);
+    Wall(p6,p5,p1,p2,n,h);
+
+    Wall(p4,p1,p5,p8,n,h);
+    Wall(p2,p3,p7,p6,n,h);
+
+    BuildNormals();
+    BuildTangentSpace();
+    Build();
+
 }

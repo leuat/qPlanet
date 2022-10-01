@@ -37,7 +37,7 @@ public:
     void Render(QOpenGLShaderProgram *program);
 
     void BuildTangentSpace();
-    void BuildNormals();
+    void BuildNormals(bool inverted=false);
 
     void Build();
 
@@ -48,6 +48,13 @@ class MeshBox : public Mesh {
 public:
     MeshBox(float scale, int n);
     void generatePlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int n);
+
+};
+
+class MeshRoom : public Mesh {
+public:
+    MeshRoom(int n, double scale, int walls);
+    void Wall(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int n, float h);
 
 };
 

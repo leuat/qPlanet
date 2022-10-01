@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
     }
     QSurfaceFormat::setDefaultFormat(glFormat);
 
+    app.setOverrideCursor( QCursor( Qt::BlankCursor ) );
     app.setApplicationName("Glitch");
     app.setApplicationVersion("0.1");
 #ifndef QT_NO_OPENGL

@@ -13,6 +13,7 @@ uniform float lamp;
 uniform float saturation;
 uniform float gamma;
 uniform float time;
+uniform vec2 mpos;
 out vec4 fragColor;
 vec2 bss;
 
@@ -46,16 +47,18 @@ void main()
     float s =(exp(-time*0.05));
     s = s + 0.001*random(vec2(time*1.52,0.0));
     bss = barrelScale*vec2(1.0+s*0.3,1.0+s);
+
     vec2 PUV = vec2(v_pos.x, (v_pos.y));
 	PUV = Dd(PUV);
+
+    vec2 mp = mpos;//Dd(mpos);
 
     vec2 pr = PUV*(0.85+chromatic);
     vec2 pg = PUV*(0.85);
     vec2 pb = PUV*(0.85-chromatic);
 
-    vec3 col;
 
-    col = gt(pr,pg,pb);
+    vec3 col = gt(pr,pg,pb);
   //  col.a = 1;
 
     float noiseAmp = 0.01 + 0.004*random(vec2(time*1.231,0));
@@ -63,6 +66,10 @@ void main()
     col.r +=noiseAmp*random(v_pos*11.23+vec2(time*11.234,time*51.123));
     col.g +=noiseAmp*random(v_pos*11.23+vec2(time*11.234,time*51.123));
     col.b +=noiseAmp*random(v_pos*11.23+vec2(time*11.234,time*51.123));
+
+    float ll = clamp(1.0-length(mp-v_pos),0.0,1.0);
+    if (ll>0.9)
+        col.r+=pow(ll,120.0);
 
 
     float t = -time*0.1511;

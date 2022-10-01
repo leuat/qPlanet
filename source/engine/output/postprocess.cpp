@@ -1,4 +1,5 @@
 #include "postprocess.h"
+#include "source/engine/sdata.h"
 
 void PostProcess::InitFramebuffer(int w, int h)
 {
@@ -60,6 +61,7 @@ void PostProcess::Draw()
     shaderScreen.setUniformValue("saturation",saturation);
     shaderScreen.setUniformValue("gamma",gamma);
     shaderScreen.setUniformValue("time",time);
+    shaderScreen.setUniformValue("mpos",SData::sdata.s_mpos);
     vao.bind();
     arrayBuf.bind();
     indexBuf.bind();

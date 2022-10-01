@@ -18,6 +18,7 @@ public:
     QSharedPointer<Entity> m_root;
     QMap<QString, Entity*> m_entityList;
     QMap<QString, QSharedPointer<Mesh>> m_meshes;
+    QMap<QString, QSharedPointer<Material>> m_materials;
 
     Camera m_camera;
 

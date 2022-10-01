@@ -37,6 +37,7 @@ protected:
     QPoint m_prevPos;
     QPointF m_mx;
     bool m_isStart = true;
+    bool m_isInMenu = false;
 
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
@@ -61,7 +62,7 @@ protected:
     virtual void Update();
     Entity player;
     PostProcess pp;
-
+    void SetThemeEnemyMouse();
 
 
 protected:

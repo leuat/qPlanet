@@ -13,7 +13,7 @@ win32-msvc*{
 
 macx{
     CONFIG += arm64
-    QMAKE_CXXFLAGS += -Xpreprocessor -fopenmp -I/usr/local/include
+    QMAKE_CXXFLAGS += -Xpreprocessor -fopenmp -I/usr/local/include -ofast
     LIBS += -L/usr/local/lib /usr/local/lib/libomp.dylib
 }
 
@@ -33,6 +33,7 @@ SOURCES += \
     source/engine/meshes/mesh.cpp \
     source/engine/meshes/meshfactory.cpp \
     source/engine/meshes/meshinstance.cpp \
+    source/engine/meshes/meshmaze.cpp \
     source/engine/meshes/meshobject.cpp \
     source/engine/meshes/planet.cpp \
     source/engine/meshes/planetdata.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     source/engine/meshes/mesh.h \
     source/engine/meshes/meshfactory.h \
     source/engine/meshes/meshinstance.h \
+    source/engine/meshes/meshmaze.h \
     source/engine/meshes/meshobject.h \
     source/engine/meshes/planet.h \
     source/engine/meshes/planetdata.h \
@@ -88,6 +90,7 @@ HEADERS += \
     source/mymeshes/rotboxtest.h
 
 RESOURCES += \
+    resources.qrc \
     shaders.qrc \
     textures.qrc
 
@@ -105,3 +108,6 @@ RESOURCES += \
 # install
 #target.path = $$[QT_INSTALL_EXAMPLES]/opengl/p
 #INSTALLS += target
+
+DISTFILES += \
+    resources/fonts/OpenSans-Regular.ttf
