@@ -22,6 +22,8 @@ public:
     QVector3D m_target = QVector3D(0,0,0);
     QVector3D m_up = QVector3D(0,1,0);
     QQuaternion m_rotation;
+    QVector3D* m_cameraPointer = nullptr;
+    QVector3D* m_targetPointer = nullptr;
 
     EntityUpdateFn UpdateFn;
     EntityInitFn InitFn;

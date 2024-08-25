@@ -29,6 +29,7 @@ protected:
     void AddGirl();
     void AddCubes();
     void AddWalls();
+    void AddChunk();
 private:
     void Init() override;
     void Update() override;

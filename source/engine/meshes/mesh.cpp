@@ -14,7 +14,7 @@ void Mesh::Render(QOpenGLShaderProgram *program)
     // Tell OpenGL which VBOs to use
     if (!isBuilt)
         return;
-  /*  if (!arrayBuf.bind()) {
+    /*  if (!arrayBuf.bind()) {
         qDebug() << "Could not bind buffer";
         exit(1);
     }*/
@@ -40,17 +40,21 @@ void Mesh::Render(QOpenGLShaderProgram *program)
     program->enableAttributeArray(normalLoc);
     program->setAttributeBuffer(normalLoc, GL_FLOAT, Q_OFFSETOF(VertexData, normal), 3, sizeof(VertexData));
 
+    int lightLoc = program->attributeLocation("a_light");
+    program->enableAttributeArray(lightLoc);
+    program->setAttributeBuffer(lightLoc, GL_FLOAT, Q_OFFSETOF(VertexData, light), 3, sizeof(VertexData));
+
     // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
     int texcoordLocation = program->attributeLocation("a_texcoord");
     program->enableAttributeArray(texcoordLocation);
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, Q_OFFSETOF(VertexData,texCoord), 2, sizeof(VertexData));
 
 
-//    qDebug() << vertexLocation<<normalLoc<<texcoordLocation;
-  //  program->setAttributeBuffer("position", GL_FLOAT,0,3);
-  //  program->enableAttributeArray("position");
+    //    qDebug() << vertexLocation<<normalLoc<<texcoordLocation;
+    //  program->setAttributeBuffer("position", GL_FLOAT,0,3);
+    //  program->enableAttributeArray("position");
 
-//    program->setAttributeBuffer(0, GL_FLOAT, Q_OFFSETOF(VertexData, position), 3, sizeof(VertexData));
+    //    program->setAttributeBuffer(0, GL_FLOAT, Q_OFFSETOF(VertexData, position), 3, sizeof(VertexData));
 
     if (usesTangent) {
         int tanLoc = program->attributeLocation("a_tangent");
@@ -65,8 +69,8 @@ void Mesh::Render(QOpenGLShaderProgram *program)
 
 
     glDrawElements(GL_TRIANGLES, indices.count(), GL_UNSIGNED_SHORT, 0);
-//    glDrawArrays(GL_TRIANGLES, indices.count(), GL_UNSIGNED_SHORT);
-//    qDebug() << indices.count();
+    //    glDrawArrays(GL_TRIANGLES, indices.count(), GL_UNSIGNED_SHORT);
+    //    qDebug() << indices.count();
     arrayBuf.release();
     indexBuf.release();
     vao.release();
@@ -144,8 +148,11 @@ void Mesh::Build()
     if (indices.count()==0)
         return;
 
-        if (vao.create())
-            vao.bind();
+    if (vao.isCreated())
+        vao.destroy();
+
+    if (vao.create())
+        vao.bind();
 
     arrayBuf = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
     arrayBuf.create();
@@ -154,7 +161,7 @@ void Mesh::Build()
     arrayBuf.allocate(&data[0], data.size() * sizeof(VertexData));
     arrayBuf.release();
 
-/*
+    /*
     QVector<QVector3D> vo;
     for (auto& d: data)
         vo.append(d.position);
@@ -176,7 +183,7 @@ void Mesh::Build()
     isBuilt = true;
 }
 
-MeshBox::MeshBox(float r, int n)
+MeshBox::MeshBox(float r, int n, bool build)
 {
 
     auto p1 = QVector3D(-r,-r,-r);
@@ -195,8 +202,37 @@ MeshBox::MeshBox(float r, int n)
 
     generatePlane(p4,p1,p5,p8,n);
     generatePlane(p2,p3,p7,p6,n);
+    if (build)
+        Build();
 
-    Build();
+}
+
+MeshBox::MeshBox(float r, int n, bool f1, bool f2, bool f3, bool f4, bool f5, bool f6, QVector3D shift)
+{
+    auto p1 = QVector3D(-r,-r,-r) + shift;
+    auto p2 = QVector3D(r,-r,-r) + shift;
+    auto p3 = QVector3D(r,r,-r) + shift;
+    auto p4 = QVector3D(-r,r,-r) + shift;
+    auto p5 = QVector3D(-r,-r,r) + shift;
+    auto p6 = QVector3D(r,-r,r) + shift;
+    auto p7 = QVector3D(r,r,r) + shift;
+    auto p8 = QVector3D(-r,r,r) + shift;
+
+    if (f1)
+        generatePlane(p4,p3,p2,p1,n);
+    if (f2)
+        generatePlane(p5,p6,p7,p8,n);
+    if (f3)
+        generatePlane(p8,p7,p3,p4,n);
+    if (f4)
+        generatePlane(p6,p5,p1,p2,n);
+    if (f5)
+        generatePlane(p4,p1,p5,p8,n);
+    if (f6)
+       generatePlane(p2,p3,p7,p6,n);
+
+//    for (auto& d : data)
+  //      d.position += shift;
 
 }
 
@@ -205,7 +241,7 @@ void MeshBox::generatePlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D 
     QVector3D dy = (p4-p1)/(n-1);
     //var vloc = PoolVector3Array()
     //   int nt = omp_get_num_threads();
-   // data.resize(n*n);
+    // data.resize(n*n);
     int vcount = data.size();
     for (int i=0;i<n;i++) {
         for (int j=0;j<n;j++) {
@@ -229,7 +265,7 @@ void MeshBox::generatePlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D 
             indices.append(vcount+(i+1)*n+(j+1));
         }
     }
-//    qDebug() << indices.count()/6 << data.size();
+    //    qDebug() << indices.count()/6 << data.size();
 }
 
 void MeshRoom::Wall(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int n, float h)
@@ -238,7 +274,7 @@ void MeshRoom::Wall(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int 
     QVector3D dy = (p4-p1)/(n-1);
     //var vloc = PoolVector3Array()
     //   int nt = omp_get_num_threads();
-   // data.resize(n*n);
+    // data.resize(n*n);
     int vcount = data.size();
 
     QVector<double> grid;
@@ -246,7 +282,7 @@ void MeshRoom::Wall(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int 
     for (int i=0;i<n;i++) {
         for (int j=0;j<n;j++) {
             auto v = i + j*n;
-//            float h = rand(
+            //            float h = rand(
         }
     }
 
@@ -276,7 +312,7 @@ void MeshRoom::Wall(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int 
         }
     }
 
-//    qDebug() << indices.count()/6 << data.size();
+    //    qDebug() << indices.count()/6 << data.size();
 }
 
 

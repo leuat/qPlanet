@@ -15,6 +15,7 @@ struct VertexData
     QVector2D texCoord;
     QVector3D binormal;
     QVector3D tangent;
+    QVector3D light = QVector3D(1,1,1);
 
 };
 
@@ -46,7 +47,8 @@ public:
 
 class MeshBox : public Mesh {
 public:
-    MeshBox(float scale, int n);
+    MeshBox(float r, int n, bool build=true);
+    MeshBox(float r, int n, bool f1, bool f2, bool f3, bool f4, bool f5, bool f6, QVector3D shift);
     void generatePlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int n);
 
 };

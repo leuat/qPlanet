@@ -134,6 +134,7 @@ void ErisWidget::initTextures()
 void ErisWidget::initMeshes()
 {
     world->m_meshes["box"] = QSharedPointer<MeshBox>(new MeshBox(1,2));
+//    world->m_meshes["chunk"] = QSharedPointer<MeshChunk>(new MeshChunk(QVector3D(0,0,0),1));
 }
 
 void ErisWidget::Update() {
@@ -235,8 +236,20 @@ void ErisWidget::paintGL()
 
     pp.StartFBuf();
 
-    glClearColor(0.0, 0.0, 0.0, 1.0); glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    auto program = SData::sdata.shaderPrograms["atmosphere"];
+    program->bind();
+    program->setUniformValue("sun", SData::sdata.s_directionalLight.normalized() );
+    program->setUniformValue("camPos", world->m_camera.m_position);
+    auto dir = (world->m_camera.m_position-world->m_camera.m_target).normalized();
+    program->setUniformValue("camForward", dir);
+    program->setUniformValue("camRight", world->m_camera.m_up.normalized());
+    pp.drawAtmosphere();
+    program->release();
+
+    glClear(GL_DEPTH_BUFFER_BIT);
     world->Render();
 //    PaintGUI();
     glFinish();
@@ -261,6 +274,8 @@ void ErisWidget::keyPressEvent(QKeyEvent* e)
     if (m_isInMenu)
         return;
     double speed = 0.4;
+    if (e->modifiers() == Qt::ShiftModifier)
+        speed *=4;
     if (e->key()==Qt::Key_W)
         world->m_camera.moveForward = speed;
     if (e->key()==Qt::Key_S)
@@ -274,6 +289,12 @@ void ErisWidget::keyPressEvent(QKeyEvent* e)
         world->m_camera.rotSide = speed;
     if (e->key()==Qt::Key_Q)
         world->m_camera.rotSide = -speed;
+
+
+    if (e->key() == Qt::Key_L) {
+        SData::sdata.s_directionalLight = QVector3D(rand()%100-50,rand()%100-50,rand()%100-50).normalized();
+
+    }
 
 
     if (e->key()==Qt::Key_Space)

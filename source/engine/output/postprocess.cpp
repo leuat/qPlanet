@@ -79,6 +79,27 @@ void PostProcess::Draw()
 
 }
 
+void PostProcess::drawAtmosphere()
+{
+    if (!isEnabled)
+        return;
+
+    vao.bind();
+    arrayBuf.bind();
+    indexBuf.bind();
+    shaderScreen.enableAttributeArray(0);
+    shaderScreen.setAttributeBuffer(0, GL_FLOAT, 0, 2, sizeof(GLfloat)*2);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
+
+    shaderScreen.disableAttributeArray(0);
+    // release the shader
+
+    indexBuf.release();
+    arrayBuf.release();
+    vao.release();
+
+}
+
 bool PostProcess::InitShaders()
 {
 

@@ -17,6 +17,8 @@
 #include "source/engine/output/postprocess.h"
 #include "source/engine/sdata.h"
 #include "source/engine/misc/util.h"
+#include "source/engine/meshes/meshchunk.h"
+
 
 class World;
 

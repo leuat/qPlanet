@@ -27,7 +27,7 @@ void main()
 {
     // Set fragment color from texture
 
-    vec3 color = u_color*clamp(dot(u_light_dir,v_normal),0.1,1.0);
+    vec3 color = u_color*clamp(dot(normalize(u_light_dir),v_normal),0.1,1.0);
 //    vec3 color = v_normal*0.5 + vec3(0.5,0.5,0.5);//v_color*
 //    color = color*clamp(dot(vec3(0,0,1),v_normal),0.1,1.0);
     //fragColor = vec4(1.0,1.0,0.0,1.0);

@@ -57,6 +57,8 @@ void GLWidget::paintGL()
     m_program->setUniformValue("time",time);
 
     time++;
+
+
     GLfloat vertices[]{ -1.0f, -1.0f,
                         1.0f, -1.0f,
                         -1.0f,  1.0f,

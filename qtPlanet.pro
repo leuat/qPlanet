@@ -13,9 +13,9 @@ win32-msvc*{
 
 macx{
     CONFIG += arm64
-    QMAKE_CXXFLAGS += -Xpreprocessor -fopenmp -I/usr/local/include -ofast
-    LIBS += -L/usr/local/lib /usr/local/lib/libomp.dylib
-}
+    QMAKE_CXXFLAGS += -Xpreprocessor -fopenmp -I/usr/local/include -ofast -O3
+    LIBS += -L/usr/local/lib
+    }
 
 SOURCES += \
     imgui/ImGuiRenderer.cpp \
@@ -31,6 +31,7 @@ SOURCES += \
     source/engine/materials/material.cpp \
     source/engine/materials/materialfactory.cpp \
     source/engine/meshes/mesh.cpp \
+    source/engine/meshes/meshchunk.cpp \
     source/engine/meshes/meshfactory.cpp \
     source/engine/meshes/meshinstance.cpp \
     source/engine/meshes/meshmaze.cpp \
@@ -67,6 +68,7 @@ HEADERS += \
     source/engine/materials/materialfactory.h \
     source/engine/mesh.h \
     source/engine/meshes/mesh.h \
+    source/engine/meshes/meshchunk.h \
     source/engine/meshes/meshfactory.h \
     source/engine/meshes/meshinstance.h \
     source/engine/meshes/meshmaze.h \

@@ -3,7 +3,7 @@
 
 #include <QOpenGLShader>
 #include <QOpenGLTexture>
-
+class Camera;
 
 class MaterialData {
 public:
@@ -52,6 +52,13 @@ public:
 class MaterialFlat : public Material {
 public:
     MaterialFlat();
+    void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
+};
+
+class MaterialBlock : public Material {
+public:
+    Camera* m_camera;
+    MaterialBlock(Camera* camera);
     void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
 };
 

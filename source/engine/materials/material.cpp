@@ -1,6 +1,7 @@
 #include "source/engine/materials/material.h"
 #include "source/engine/sdata.h"
 #include <QFile>
+#include "source/engine/camera.h"
 
 Material::Material()
 {
@@ -48,11 +49,30 @@ MaterialFlat::MaterialFlat()
 //    Link(":/shaders/vert_flat.glsl",":/shaders/frag_flat.glsl");
 }
 
+MaterialBlock::MaterialBlock(Camera *camera)
+{
+    program = SData::sdata.shaderPrograms["block"].get(); //    Link(":/shaders/vert_flat.glsl",":/shaders/frag_flat.glsl");
+    m_camera = camera;
+}
+
 void MaterialFlat::bind(QMatrix4x4 mvp, const QMatrix3x3 rot)
 {
     program->bind();
     setMatrices(mvp,rot);
     setDefaults(mData);
+
+}
+
+void MaterialBlock::bind(QMatrix4x4 mvp, const QMatrix3x3 rot)
+{
+    program->bind();
+    setMatrices(mvp,rot);
+    setDefaults(mData);
+    program->setUniformValue("sun", SData::sdata.s_directionalLight.normalized() );
+    program->setUniformValue("camPos", m_camera->m_position);
+    auto dir = (m_camera->m_position-m_camera->m_target).normalized();
+    program->setUniformValue("camForward", dir);
+    program->setUniformValue("camRight", m_camera->m_up.normalized());
 
 }
 

@@ -14,5 +14,9 @@
         <file>shaders/vert_normal.glsl</file>
         <file>shaders/vert_flat_110.glsl</file>
         <file>shaders/frag_flat_110.glsl</file>
+        <file>shaders/atmosphere.frag</file>
+        <file>shaders/atmosphere.vert</file>
+        <file>shaders/block.frag</file>
+        <file>shaders/block.vert</file>
     </qresource>
 </RCC>

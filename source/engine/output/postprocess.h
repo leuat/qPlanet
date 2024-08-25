@@ -16,7 +16,7 @@ public:
     QVector3D barrelScale = (QVector3D(1,1,1) - (0.20 * CD));
     float chromatic = 0.015*0.4;//*0;
     // Curvature distortionddddddd
-    float lsca = 482.12;
+    float lsca = 982.12;
     float lamp = 0.4*0.3;
     float saturation = 1.5;
     float gamma = 1.2;
@@ -32,6 +32,7 @@ public:
     void StartFBuf();
     void EndFBuf();
     void Draw();
+    void drawAtmosphere();
     bool InitShaders();
     void Init();
 };
