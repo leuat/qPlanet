@@ -6,9 +6,10 @@
 #include <QVector3D>
 #include "source/engine/misc/SimplexNoise.h"
 #include <QThread>
+#include <QRunnable>
 #include <QMutex>
 
-class MeshChunk : public QThread, public Mesh
+class MeshChunk : public QObject, public QRunnable, public Mesh
 {
     Q_OBJECT
 public:
@@ -19,7 +20,9 @@ public:
     QVector3D m_pos;
     int m_type = 0;
     float m_orgScale;
+    bool m_ignore = false;
     float m_scale = 1;
+    static const int hShift = -12;
     float m_localScale = 1;
     bool m_isDone = false;
     bool m_isGenerated = false;
@@ -29,16 +32,16 @@ public:
     int getChunkIndex(const int scale);
     QVector<unsigned char> m_data;
     void run() override;
+    void Calculate();
     void calculateAmbientOcclusion();
     void calculateShadow();
     void UpdateShadow();
     void reGenerateAll();
     int getEstimatedLod();
 
-
     int WorldGen(const QVector3D pos);
 
-    void Generate();
+    void GenerateMesh();
     unsigned char get(int i,int j, int k);
     unsigned char getReal(int i,int j, int k);
     void set(int i,int j, int k, unsigned char d);

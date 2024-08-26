@@ -232,9 +232,9 @@ void ErisWidget::paintGL()
     // Bind shader pipeline for use
     //initFramebuffer();
 
-    pp.InitFramebuffer(width()*2, height()*2);
+//    pp.InitFramebuffer(width()*2, height()*2);
 
-    pp.StartFBuf();
+  //  pp.StartFBuf();
 
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -258,8 +258,8 @@ void ErisWidget::paintGL()
 
   //  QImage fb = pp.fbo->toImage().convertToFormat(QImage::Format_RGB32);
    // fb.save("/Users/leuat/test.png");
-    pp.EndFBuf();
-    pp.Draw();
+//    pp.EndFBuf();
+//    pp.Draw();
     Update();
 
    // glClearColor(0.5,0.1,0,1);

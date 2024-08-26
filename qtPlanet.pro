@@ -13,7 +13,7 @@ win32-msvc*{
 
 macx{
     CONFIG += arm64
-    QMAKE_CXXFLAGS += -Xpreprocessor -fopenmp -I/usr/local/include -ofast -O3
+    QMAKE_CXXFLAGS += -Xpreprocessor -fopenmp -I/usr/local/include -Ofast
     LIBS += -L/usr/local/lib
     }
 

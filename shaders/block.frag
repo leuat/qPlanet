@@ -211,9 +211,10 @@ void main()
     color = color*clamp(sqrt(sun.y)+0.1,0,1);
 
     vec3 fogColor = vec3(0.35,0.37,0.4)*clamp(sun.y,0,1);
-    float dist = clamp(1-length(v_pos-camPos)*0.0040,0.0,1.0);
+    float dist = clamp(1-length(v_pos-camPos)*0.0060,0.0,1.0);
 
     color = mix(color, fogColor, clamp(-(10+v_pos.y)*0.03,0.0,1.0));
+
     col = mix(sqrt(col), color, dist);
     fragColor = vec4(col,1.0);
 }

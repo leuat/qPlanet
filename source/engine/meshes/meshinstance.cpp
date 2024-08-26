@@ -1,6 +1,8 @@
 #include "meshinstance.h"
 #include "source/engine/misc/util.h"
 #include "source/engine/sdata.h"
+#include <QThreadPool>
+
 MeshInstance::MeshInstance()
 {
 
@@ -71,10 +73,12 @@ void MeshChunks::Update()
 {
     //   if (!isRunning())
     time+=1;
-    if (SData::sdata.noThreads<30)
+    if (QThreadPool::globalInstance()->activeThreadCount()==0)
         RemoveDistantChunks();
-    if (m_isDone)
-        start();
+
+    run();
+//    if (m_isDone)
+  //      start();
 //    ManageChunks();
    // qDebug() <<SData::sdata.noThreads;
 
@@ -84,9 +88,9 @@ void MeshChunks::Update()
 void MeshChunks::ManageChunks()
 {
 
-    qDebug() << SData::sdata.noThreads;
-    if (SData::sdata.noThreads>500)
-        return;
+    qDebug() << QThreadPool::globalInstance()->activeThreadCount();
+//    if (SData::sdata.noThreads>32)
+  //      return;
 
     const auto size = m_size;
     if (m_cameraPointer==nullptr)
@@ -108,6 +112,7 @@ void MeshChunks::ManageChunks()
    {
   //    for (int i=0;i<size;i++)
         int i = time % size;
+//  for (int i=time&(size/2);i<time%size;i+=size/2)
         for (int j=0;j<m_sizeY;j++)
             for (int k=0;k<size;k+=1)  {
                 bool exists = false;
@@ -212,8 +217,11 @@ void MeshChunks::finishThread()
 {
     for (auto& v : m_queue) {
         QVector<QSharedPointer<MeshChunk>> chunks;
-        for (int type = 0;type<4; type++)
+        for (int type = 0;type<4; type++) {
             chunks.append(QSharedPointer<MeshChunk>(new MeshChunk(v,m_scale, type)));
+            chunks.last()->setAutoDelete(false);
+            QThreadPool::globalInstance()->start(chunks.last().get());
+        }
         m_chunks.append(chunks);
     }
     m_queue.clear();

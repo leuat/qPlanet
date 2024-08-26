@@ -43,7 +43,7 @@ void MainWidget::AddChunk()
     mats.append(sea);
     mats.append(dirt);
     mats.append(snow);
-    QSharedPointer<MeshChunks> mc  = QSharedPointer<MeshChunks>(new MeshChunks(32,8,0.4,mats));
+    QSharedPointer<MeshChunks> mc  = QSharedPointer<MeshChunks>(new MeshChunks(40,10,0.2,mats));
 
     world->m_entityList["root"]->m_children.append(mc);
     world->m_entityList["chunk"] = mc.get();
@@ -182,7 +182,7 @@ void MainWidget::Update()
     double time = SData::sdata.time;
 //    time = 1;
     time*=0.2;
- //   SData::sdata.s_directionalLight = QVector3D(r*cos(time/130.0),r*cos(time/171.0)+r*1.3,r*sin(time/130.0));
+    SData::sdata.s_directionalLight = QVector3D(r*cos(time/130.0),r*cos(time/171.0)+r*1.3,r*sin(time/130.0));
   //  SData::sdata.s_directionalLight = QVector3D(0.7,0.7,0.7).normalized();
 
     world->Update();

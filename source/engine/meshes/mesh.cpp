@@ -18,7 +18,14 @@ void Mesh::Render(QOpenGLShaderProgram *program)
         qDebug() << "Could not bind buffer";
         exit(1);
     }*/
+    if (!arrayBuf.isCreated())
+        return;
+    if (!vao.isCreated())
+        return;
+    if (!indexBuf.isCreated())
+        return;
     vao.bind();
+
     arrayBuf.bind();
     if (!indexBuf.bind()) {
         qDebug() << "Could not bind index buffer";
