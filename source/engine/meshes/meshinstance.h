@@ -23,17 +23,23 @@ public:
 };
 
 
-class MeshChunks :  public QThread, public Entity {
+class MeshChunks :  public QThread,public Entity {
 
     Q_OBJECT
 public:
 
-    QVector<QVector<QSharedPointer<MeshChunk>>> m_chunks;
-    QVector<QVector<QSharedPointer<MeshChunk>>> m_tmpChunks;
-    QVector<QVector<QSharedPointer<MeshChunk>>> m_flaggedForRegen;
+    QVector<QSharedPointer<MeshChunkAll>> m_chunks;
+    QVector<QSharedPointer<MeshChunkAll>> m_tmpChunks;
+    QVector<QSharedPointer<MeshChunkAll>> m_renderChunks;
+    QVector<QSharedPointer<MeshChunkAll>> m_flaggedForRegen;
     QVector<QVector3D> m_queue;
+    QVector<QSharedPointer<MeshChunkAll>> m_updateQueue;
+    QVector<QVector3D> m_ignoreList;
     int m_size, m_sizeY;
+    bool m_isRunning = false;
     float m_scale;
+    int curY = 0;
+    std::atomic<bool> m_isReady = true;
     QVector<QSharedPointer<Material>> m_materials;
     int time = 0;
     int time2 = 0;
@@ -45,6 +51,10 @@ public:
     void Update() override;
     void ManageChunks();
     void RemoveDistantChunks();
+    void RemoveIgnoredChunks();
+    void ManagedFlaggedForRegenChunks();
+    void ManageQueue();
+    void UpdateAll();
     void Render(QMatrix4x4 proj) override;
 public slots:
     void finishThread();

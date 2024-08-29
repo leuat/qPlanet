@@ -2,6 +2,7 @@
 #include "source/engine/misc/util.h"
 #include "source/engine/sdata.h"
 #include <QThreadPool>
+#include <QMutexLocker>
 
 MeshInstance::MeshInstance()
 {
@@ -18,9 +19,7 @@ void MeshInstance::Render(QMatrix4x4 projection)
         return;
 
     m_material->bind(projection * getMV(),m_rotation.normalized().toRotationMatrix());
-    //    qDebug() << m_rotation;
     m_mesh->Render(m_material->program);
-    //    qDebug() <<m_mesh->children.count();
     for (auto& c:m_mesh->children) {
         if (extraMats.contains(c->name))
             m_material->setDefaults(extraMats[c->name]);
@@ -44,6 +43,7 @@ MeshChunks::MeshChunks(int size, int sy, float scale, QVector<QSharedPointer<Mat
     m_scale = scale;
     m_chunks.resize(0);
     m_sizeY = sy;
+
     //   m_chunks.resize(size*size*size);
     /*    for (int i=0;i<size;i++)
         for (int j=0;j<size;j++)
@@ -57,10 +57,17 @@ MeshChunks::MeshChunks(int size, int sy, float scale, QVector<QSharedPointer<Mat
 
 void MeshChunks::run()
 {
+    return;
 //    SData::sdata.noThreads++;
-    ManageChunks();
+    while (true) {
+        if (m_isReady) {
+            ManageChunks();
+            time+=1;
+            m_isReady = false;
+        }
+    }
 //    emit allDone();
-    m_isDone = true;
+    //m_isDone = true;
 //    SData::sdata.noThreads--;
     //  }
 
@@ -71,24 +78,14 @@ void MeshChunks::run()
 
 void MeshChunks::Update()
 {
-    //   if (!isRunning())
-    time+=1;
-    if (QThreadPool::globalInstance()->activeThreadCount()==0)
-        RemoveDistantChunks();
 
-    run();
-//    if (m_isDone)
-  //      start();
-//    ManageChunks();
-   // qDebug() <<SData::sdata.noThreads;
-
-    //    ManageChunks();
 }
+
 
 void MeshChunks::ManageChunks()
 {
 
-    qDebug() << QThreadPool::globalInstance()->activeThreadCount();
+//    qDebug() << QThreadPool::globalInstance()->activeThreadCount();
 //    if (SData::sdata.noThreads>32)
   //      return;
 
@@ -97,45 +94,45 @@ void MeshChunks::ManageChunks()
         return;
 
 
-    //    qDebug() <<m_chunks.size() << (size*size*size);
-    //    while (m_chunks.count()<size*size*size) {
     // Find Chunk
-    QVector3D cp = *m_cameraPointer + (*m_targetPointer-*m_cameraPointer).normalized()*removalScaleAdd;
+    QVector3D cp = *m_cameraPointer;// + (*m_targetPointer-*m_cameraPointer).normalized()*removalScaleAdd;
     const int step = 1;
     time2 = (time2+1)%step;
+
 //    if (rand()%100>97)
   //      qDebug() << time;
-    m_tmpChunks = m_chunks;
-    int sx = m_cameraPointer->x()/((float)m_scale*MeshChunk::worldSize*2);
-    int sz = m_cameraPointer->z()/((float)m_scale*MeshChunk::worldSize*2);
+    //m_tmpChunks = m_chunks;
+    int sx = m_cameraPointer->x()/((float)m_scale*Chunk::size*2);
+    int sz = m_cameraPointer->z()/((float)m_scale*Chunk::size*2);
 
+    if (time%size==0) curY=(curY+1)%m_sizeY;
    {
   //    for (int i=0;i<size;i++)
         int i = time % size;
+//      int j = (m_sizeY-curY-1)%m_sizeY;
 //  for (int i=time&(size/2);i<time%size;i+=size/2)
         for (int j=0;j<m_sizeY;j++)
             for (int k=0;k<size;k+=1)  {
                 bool exists = false;
-                const QVector3D curPos = QVector3D(i+sx-size/2.0, j-m_sizeY/2.0, k+sz-size/2.0)*m_scale*MeshChunk::worldSize;
+                const QVector3D curPos = QVector3D(i+sx-size/2.0, j-m_sizeY/2.0, k+sz-size/2.0)*m_scale*Chunk::size;
                 QVector3D pos = curPos*2 -  cp;
+                if (m_ignoreList.contains(curPos))
+                    continue;
 
-                   for (auto& v:m_tmpChunks) {
-                    if (v.count()>=1 && v[0]!=nullptr) {
-                        if ((v[0]->m_pos-curPos).length()<0.2) {
+                   for (auto& v:m_chunks) {
+                       {
+                        if ((v->m_pos-curPos).length()<0.2) {
                             exists = true;
-                            if (((v[0]->m_pos-curPos).length() <size*MeshChunk::worldSize*m_scale*0.4))
-                                for (int i=0;i<v.count();i++) {
-                                    v[i]->UpdateShadow();
-          //                          if (v[i]->getEstimatedLod()!=v[i]->m_currentLod)
-            //                            m_flaggedForRegen.append(v);
-                                }
+                            if (((v->m_pos-curPos).length() <size*Chunk::size*m_scale*0.4))
+                                if (v->UpdateShadow() && !m_updateQueue.contains(v))
+                                    m_updateQueue.append(v);
                             break;
                         }
                     }
                 }
 
                 if (m_chunks.size()<size*m_sizeY*size)
-                    if (!exists &&  pos.length()<size*MeshChunk::worldSize*m_scale*1.2 && !m_queue.contains(curPos)) {
+                    if (!exists &&  pos.length()<size*Chunk::size*m_scale*1.2 && !m_queue.contains(curPos)) {
                     m_queue.append(curPos);
 
                 }
@@ -145,53 +142,48 @@ void MeshChunks::ManageChunks()
 
 
 
-//    qDebug() << m_chunks.count() << add <<removal.count()<< rand()%100 << *m_cameraPointer ;
-    //  }
-    /*
-        for (int i=0;i<size;i++)
-        for (int j=0;j<size;j++)
-            for (int k=0;k<size;k++)  {
-
-                QVector3D pos = QVector3D(i-size/2.0, j-size/2.0, k-size/2.0)*m_scale*MeshChunk::size;
-
-                m_chunks[i*size*size + j*size + k] = QSharedPointer<MeshChunk>(new MeshChunk(pos,m_scale));
-            }
-
-*/
-
 }
 
 void MeshChunks::RemoveDistantChunks()
 {
     // Remove far-away objects
-    QVector3D cp = *m_cameraPointer + (*m_targetPointer-*m_cameraPointer).normalized()*removalScaleAdd;
-    QList<QVector<QSharedPointer<MeshChunk>>> removal;
+    QVector3D cp = *m_cameraPointer;// + (*m_targetPointer-*m_cameraPointer).normalized()*removalScaleAdd;
+    QList<QSharedPointer<MeshChunkAll>> removal;
     for (auto& c : m_chunks) {
-        QVector3D pos = c[0]->m_pos*2 -  cp;
+        QVector3D pos = c->m_pos*2 -  cp;
         pos.setY(0);
 
-        if (pos.length()>m_size*MeshChunk::worldSize*m_scale*1.2) {
+        if (c->m_ignore) {
+            m_ignoreList.append(c->m_pos);
+        }
+
+        if (pos.length()>m_size*Chunk::size*m_scale*1.2 || m_ignoreList.contains(c->m_pos)) {
             removal.append(c);
         }
     }
-
     //    m_chunks.removeAll(removal);
-
-    for (auto& c: removal) {
-        if (c[0]->m_isDone)
+    for (auto& c: removal)
+        if (c->m_isDone) {
             m_chunks.removeAll(c);
-    }
-//    if (removal.count()!=0)
-  //      qDebug() << "Removed "<<removal.size();
+            ChunkData::s.remove(c->m_pos);
+        }
+    //qDebug() << m_chunks.size() << ChunkData::s.m_data.count() << m_queue.size() << m_renderChunks.count() << m_ignoreList.count() << removal.size() << QThreadPool::globalInstance()->activeThreadCount();
 
 
 }
 
+
 void MeshChunks::Render(QMatrix4x4 projection)
 {
     // Set modelview-projection matrix
-    finishThread();
-    for (int type = 0; type <4; type++ ){
+//    if (m_isReady == false) {
+  //  }
+//    finishThread();
+    UpdateAll();
+
+    m_renderChunks = m_chunks;
+
+    for (int type = 0; type <4; type++ ) {
         auto material = m_materials[type];
 
         if (material==nullptr)
@@ -199,38 +191,115 @@ void MeshChunks::Render(QMatrix4x4 projection)
 
         material->bind(projection * getMV(),m_rotation.normalized().toRotationMatrix());
         //    qDebug() << m_rotation;
-        for (auto& v : m_chunks) {
-            if (v.count()!=0)
-                if (v[type]!=nullptr)
-                if (v[type]->m_isDone)
-                    v[type]->Render(material->program);
+        int ign = 0;
+
+        for (auto& v : m_renderChunks) {
+            if (v->m_ignore || !v->m_isDone)
+                continue;
+
+            if (v->m_meshChunks.count()!=4)
+                continue;
+
+            auto ch = v->m_meshChunks[type];
+            if (ch->m_ignore)
+                continue;
+//            if (ch->m_isDone==false)
+  //              continue;
+//            if (ch->ignore())
+  //              ign++;
+
+            if (ch!=nullptr)
+                    ch->Render(material->program);
+
 
         }
 
         material->release();
+//        if (rand()%100>90)
+  //          qDebug() << ign/(float)m_chunks.count() << m_chunks.count() << QThreadPool::globalInstance()->activeThreadCount();
 
-        Entity::Render(getMV());
+//        Entity::Render(getMV());
+//        qDebug() << ign/(float)m_chunks.count() << m_chunks.count();
     }
+
+  //  qDebug() << m_ignoreList.count() <<m_chunks.count() << m_tmpChunks.count() << m_renderChunks.count() << m_queue.count();
+    if (m_isReady == false)
+        m_isReady = true;
+
+
+
+
+
 }
 
 void MeshChunks::finishThread()
 {
-    for (auto& v : m_queue) {
-        QVector<QSharedPointer<MeshChunk>> chunks;
-        for (int type = 0;type<4; type++) {
-            chunks.append(QSharedPointer<MeshChunk>(new MeshChunk(v,m_scale, type)));
-            chunks.last()->setAutoDelete(false);
-            QThreadPool::globalInstance()->start(chunks.last().get());
-        }
-        m_chunks.append(chunks);
-    }
-    m_queue.clear();
+    ManageQueue();
 
 
-    for (auto& v: m_flaggedForRegen)
-        for (int i=0;i<v.count();i++)
-            v[i]->reGenerateAll();
 
-    m_flaggedForRegen.clear();
 }
 
+
+void MeshChunks::ManagedFlaggedForRegenChunks()
+{
+    /*
+    for (auto& v: m_flaggedForRegen)
+        for (int i=0;i<v.count();i++) {
+            v[i]->reGenerateAll();
+
+        }
+
+    m_flaggedForRegen.clear();
+*/
+
+
+}
+
+void MeshChunks::ManageQueue()
+{
+
+    for (auto& v : m_queue) {
+        m_chunks.append(QSharedPointer<MeshChunkAll>(new MeshChunkAll(v)));
+        m_chunks.last()->setAutoDelete(false);
+//        m_chunks.last()->run();
+        m_chunks.last()->Setup();
+        QThreadPool::globalInstance()->start(m_chunks.last().get(),1);
+//        m_chunks.last()->run();
+    }
+    m_queue.clear();
+    if (m_updateQueue.size()!=0)
+        qDebug() << m_updateQueue.size();
+
+    for (auto& v : m_updateQueue) {
+        v->setAutoDelete(false);
+        QThreadPool::globalInstance()->start(v.get(),1);
+        //        m_chunks.last()->run();
+    }
+    m_updateQueue.clear();
+
+
+}
+
+void MeshChunks::UpdateAll()
+{
+//    qDebug() << QThreadPool::globalInstance()->activeThreadCount();
+ //   if (QThreadPool::globalInstance()->activeThreadCount()==0)
+       RemoveDistantChunks();
+
+    m_isReady = false;
+   // RemoveIgnoredChunks();
+    ManageChunks();
+    ManageQueue();
+    //    finishThread();
+
+    time+=1;
+    /*
+    if (!m_isRunning) {
+    //    run();
+        m_isRunning = true;
+        start();
+    }
+*/
+
+}

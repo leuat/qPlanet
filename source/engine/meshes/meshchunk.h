@@ -8,21 +8,21 @@
 #include <QThread>
 #include <QRunnable>
 #include <QMutex>
+#include "source/engine/chunkdata.h"
 
-class MeshChunk : public QObject, public QRunnable, public Mesh
+
+
+class MeshChunk : public Mesh
 {
-    Q_OBJECT
 public:
-    MeshChunk(QVector3D pos, float scale, int type);
-    int size = 16;
-    static const int worldSize = 12;
-    static SimplexNoise sn;
+    MeshChunk(QVector3D pos, int type);
     QVector3D m_pos;
-    int m_type = 0;
-    float m_orgScale;
+    QSharedPointer<Chunk> m_chunk;
     bool m_ignore = false;
-    float m_scale = 1;
-    static const int hShift = -12;
+    bool m_shadowsOnly = false;
+
+    int m_type = 0;
+    int m_noChunks = 0;
     float m_localScale = 1;
     bool m_isDone = false;
     bool m_isGenerated = false;
@@ -30,27 +30,48 @@ public:
     int m_currentLod = 1;
     QVector3D m_lightDir;
     int getChunkIndex(const int scale);
-    QVector<unsigned char> m_data;
-    void run() override;
     void Calculate();
     void calculateAmbientOcclusion();
     void calculateShadow();
-    void UpdateShadow();
     void reGenerateAll();
     int getEstimatedLod();
 
-    int WorldGen(const QVector3D pos);
 
     void GenerateMesh();
+    /*
     unsigned char get(int i,int j, int k);
     unsigned char getReal(int i,int j, int k);
     void set(int i,int j, int k, unsigned char d);
+    */
+
+};
+
+class MeshChunkAll : public QObject, public QRunnable {
+    Q_OBJECT
+public:
+
+    QVector<QSharedPointer<MeshChunk>> m_meshChunks;
+    QSharedPointer<Chunk> m_chunk;
+    QVector3D m_pos;
+    double sum = 0;
+    MeshChunkAll(QVector3D pos);
+
+    void Generate();
+    bool m_isDone = false;
+    bool m_ignore = false;
+    bool m_isGenerated = false;
+    bool isBuildingShadows();
+    void run() override;
+    void Setup();
+
+    bool UpdateShadow();
 
 public slots:
     void finishThread();
 
 signals:
     void meshReady();
+
 };
 
 

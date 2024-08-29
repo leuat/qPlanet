@@ -63,7 +63,7 @@ const float Ra = 6380e3; // Earth atmosphere top raduis
 const vec3 bR = vec3(58e-7, 135e-7, 331e-7); // Rayleigh scattering coefficient
 const vec3 bMs = vec3(2e-5); // Mie scattering coefficients
 const vec3 bMe = bMs * 1.1;
-const float I = 10.; // Sun intensity
+const float I = 6.; // Sun intensity
 const vec3 C = vec3(0., -R0, 0.); // Earth center point
 
 // Calculate densities $\rho$.
@@ -175,16 +175,24 @@ vec3 scatter(vec3 o, vec3 d, float L, vec3 Lo) {
 void main()
 {
     sundir = normalize(sun);
-    vec2 fragCoord = vec2(-s_pos.x/1600.0, s_pos.y/1024.0);
+//    vec2 fragCoord = vec2(-s_pos.x/1600.0, s_pos.y/1024.0);
+    vec2 fragCoord = vec2(-s_pos.x/1600.0/4.0, s_pos.y/1024.0/4.0 -0.1);
     // Normalized pixel coordinates (from -1 to 1)
     vec2 uv = fragCoord;///iResolution.xy * 2. - 1.;
 
     // Fix aspect
-//    uv.x *= 1600.0/1024.0;
+ //   uv.y /= 1600.0/1024.0;
 
     vec3 O = vec3(v_pos.x, v_pos.y-5000, v_pos.z);
-    vec3 cf = normalize((sun - v_pos));
+//    O = camPos-vec3(0.0, -v_pos.y, 0.0);
+    O = vec3(0,0,0);
+//    uv.x *= 1600.0/1024.0;
+
+    vec3 cf = normalize((camPos - vec3(v_pos.x*1., v_pos.y, v_pos.z*1.)+vec3(0,-1.0,0)));
+//    vec3 cf = normalize(camForward);
     vec3 U = normalize(cross(cf, camRight));
+
+//    vec3 D = normalize(camForward*-1 + uv.y*normalize(camRight) + uv.x*U);
     vec3 D = normalize(cf*-1 + uv.y*normalize(camRight) + uv.x*U);
 
 //    O = camPos;
@@ -193,6 +201,9 @@ void main()
     float L = escape(O, D, Ra);
 
     col = scatter(O, D, L, col);
+
+    col = sqrt(col);
+//    if (length(col)<0.4) col = vec3(0.1,0.08,0.09)*2.0;
 
     float p = noise(v_pos*0.05);
     float p2 = int((noise(v_pos*20.1)*16.0))/16.0;
@@ -211,11 +222,13 @@ void main()
     color = color*clamp(sqrt(sun.y)+0.1,0,1);
 
     vec3 fogColor = vec3(0.35,0.37,0.4)*clamp(sun.y,0,1);
-    float dist = clamp(1-length(v_pos-camPos)*0.0060,0.0,1.0);
+    float dist = clamp(1-pow(length(v_pos-camPos),1.5)*0.0010,0.1,1.0);
+//    dist = 0.;
 
-    color = mix(color, fogColor, clamp(-(10+v_pos.y)*0.03,0.0,1.0));
+    color = mix(color, fogColor, clamp(-(8+v_pos.y)*0.03,0.0,1.0));
 
-    col = mix(sqrt(col), color, dist);
+//    col = mix(col, color*(col+vec3(1,1,1)), dist);
+    col = mix(col, color, dist);
     fragColor = vec4(col,1.0);
 }
 

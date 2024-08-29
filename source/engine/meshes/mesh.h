@@ -25,6 +25,8 @@ class Mesh
 public:
     QVector<VertexData> data;
     QVector<GLushort> indices;
+    QVector<VertexData> workData;
+    QVector<GLushort> workIndices;
     QOpenGLVertexArrayObject vao;
     QString name;
     QOpenGLBuffer arrayBuf;

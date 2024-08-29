@@ -14,6 +14,7 @@ void Mesh::Render(QOpenGLShaderProgram *program)
     // Tell OpenGL which VBOs to use
     if (!isBuilt)
         return;
+
     /*  if (!arrayBuf.bind()) {
         qDebug() << "Could not bind buffer";
         exit(1);
@@ -161,6 +162,13 @@ void Mesh::Build()
     if (vao.create())
         vao.bind();
 
+    if (arrayBuf.isCreated())
+        arrayBuf.destroy();
+
+    if (indexBuf.isCreated())
+        indexBuf.destroy();
+
+
     arrayBuf = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
     arrayBuf.create();
     arrayBuf.bind();
@@ -237,6 +245,9 @@ MeshBox::MeshBox(float r, int n, bool f1, bool f2, bool f3, bool f4, bool f5, bo
         generatePlane(p4,p1,p5,p8,n);
     if (f6)
        generatePlane(p2,p3,p7,p6,n);
+
+    workIndices = indices;
+    workData = data;
 
 //    for (auto& d : data)
   //      d.position += shift;

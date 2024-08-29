@@ -4,6 +4,7 @@ TARGET = qtPlanet
 TEMPLATE = app
 QMAKE_CXXFLAGS += -I$$PWD/imgui
 
+CONFIG += sanitizer sanitizer_address
 
 win32-msvc*{
     QMAKE_CXXFLAGS += -openmp
@@ -26,6 +27,7 @@ SOURCES += \
     imgui/imgui_tables.cpp \
     imgui/imgui_widgets.cpp \
     source/engine/camera.cpp \
+    source/engine/chunkdata.cpp \
     source/engine/entity.cpp \
     source/engine/eriswidget.cpp \
     source/engine/materials/material.cpp \
@@ -62,6 +64,7 @@ HEADERS += \
     imgui/imstb_textedit.h \
     imgui/imstb_truetype.h \
     source/engine/camera.h \
+    source/engine/chunkdata.h \
     source/engine/entity.h \
     source/engine/eriswidget.h \
     source/engine/materials/material.h \
