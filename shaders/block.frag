@@ -217,7 +217,7 @@ void main()
     else
         color = color*(0.75+p2*0.25);
 
-    color = color*clamp(dot(normalize(u_light_dir),v_normal),0.05,1.0) *v_light;
+    color = color*clamp(dot(normalize(u_light_dir),v_normal),0.15,1.0) *v_light;
 
     color = color*clamp(sqrt(sun.y)+0.1,0,1);
 

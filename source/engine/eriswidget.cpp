@@ -292,7 +292,7 @@ void ErisWidget::keyPressEvent(QKeyEvent* e)
 
 
     if (e->key() == Qt::Key_L) {
-        SData::sdata.s_directionalLight = QVector3D(rand()%100-50,rand()%100-50,rand()%100-50).normalized();
+        SData::sdata.s_directionalLight = QVector3D(rand()%100-50,rand()%100,rand()%100-50).normalized();
 
     }
 

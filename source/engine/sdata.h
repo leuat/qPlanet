@@ -16,7 +16,7 @@ public:
     QMap<QString, QSharedPointer<QOpenGLShaderProgram>> shaderPrograms;
 
 
-    QVector3D s_directionalLight = QVector3D(1,0.7,1);
+    QVector3D s_directionalLight = QVector3D(1,0.4,1);
     QVector3D s_directionalLightColor = QVector3D(1,1,1);
     QVector3D *camera;
     double time = 0;

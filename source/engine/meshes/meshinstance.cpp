@@ -284,7 +284,7 @@ void MeshChunks::ManageQueue()
 void MeshChunks::UpdateAll()
 {
 //    qDebug() << QThreadPool::globalInstance()->activeThreadCount();
- //   if (QThreadPool::globalInstance()->activeThreadCount()==0)
+    if (QThreadPool::globalInstance()->activeThreadCount()==0)
        RemoveDistantChunks();
 
     m_isReady = false;

@@ -45,13 +45,13 @@ void MainWidget::AddChunk()
     mats.append(sea);
     mats.append(dirt);
     mats.append(snow);
-    QSharedPointer<MeshChunks> mc  = QSharedPointer<MeshChunks>(new MeshChunks(32,6,0.2,mats));
+    QSharedPointer<MeshChunks> mc  = QSharedPointer<MeshChunks>(new MeshChunks(16,6,0.2,mats));
     Chunk::scale = 0.2;
     world->m_entityList["root"]->m_children.append(mc);
     world->m_entityList["chunk"] = mc.get();
     grass->mData.color = QVector3D(0.4,1.0,0.3);
     dirt->mData.color = QVector3D(0.7,0.7,0.7);
-    sea->mData.color = QVector3D(0.4,0.6,1.0);
+    sea->mData.color = QVector3D(0.4,0.6,1.0) ;
     snow->mData.color = QVector3D(1.9,1.9,1.9);
     mc->m_cameraPointer = &world->m_camera.m_position;
     mc->m_targetPointer = &world->m_camera.m_target;

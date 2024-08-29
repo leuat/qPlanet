@@ -40,21 +40,24 @@ void MeshChunk::calculateAmbientOcclusion()
     const int size = Chunk::size;
     for (auto& d : workData) {
         //auto p = m_pos + QVector3D((i-size/2.0)*m_scale,(j-size/2.0)*m_scale,(k-size/2.0)*m_scale);
-        QVector3D p2 = (((d.position*0.5-m_pos))/Chunk::scale) + 0.5*size*QVector3D(1,1,1) + QVector3D(0.25,0,0.25);
-        p2 = QVector3D((int)p2.x(),(int)p2.y(),(int)p2.z());
+        QVector3D p2 = (((d.position*0.5-m_pos))/Chunk::scale) + 0.5*size*QVector3D(1,1,1) + QVector3D(0.25,0.25,0.25);
+        float s = 0.5;
+        //p2 = QVector3D((int)p2.x(),(int)p2.y(),(int)p2.z());
         //                if (rand()%1000>998)
         //                qDebug() << p2;
+        float a = 1.5;
         float l = 1.0 -(
-                            m_chunk->getReal(p2.x(),p2.y()+1,p2.z()-1)!=0 +
-                                                                                    m_chunk->getReal(p2.x(),p2.y()+1,p2.z()+1)!=0 +
-                                   m_chunk->getReal(p2.x()-1,p2.y()+1,p2.z())!=0 +
-                                   m_chunk->getReal(p2.x()+1,p2.y()+1,p2.z())!=0 +
+                                 a*m_chunk->getReal(p2.x(),p2.y()+s,p2.z()-s)!=0 +
+                                 a*m_chunk->getReal(p2.x(),p2.y()+s,p2.z()+s)!=0 +
+                                 a*m_chunk->getReal(p2.x()-s,p2.y()+s,p2.z())!=0 +
+                                 a*m_chunk->getReal(p2.x()+s,p2.y()+s,p2.z())!=0
+/*
                                    m_chunk->getReal(p2.x()-1,p2.y()+1,p2.z()-1)!=0 +
                                    m_chunk->getReal(p2.x()-1,p2.y()+1,p2.z()+1)!=0 +
                                    m_chunk->getReal(p2.x()-1,p2.y()+1,p2.z()-1)!=0 +
                                    m_chunk->getReal(p2.x()+1,p2.y()+1,p2.z()+1)!=0
-
-                            )*0.25;
+*/
+                            )*0.75;
 
         //                        float dist = ((p*2 - d.position-QVector3D(0,-0.5,0)).length()*+0.5)*0.5;
         d.light = QVector3D(1.0, 1.0, 1.0)*(l);
@@ -72,21 +75,21 @@ void MeshChunk::calculateShadow()
 
     for (auto& d : workData) {
         //auto p = m_pos + QVector3D((i-size/2.0)*m_scale,(j-size/2.0)*m_scale,(k-size/2.0)*m_scale);
-        QVector3D p = (((d.position*0.5-m_pos))/Chunk::scale) + 0.5*QVector3D(1,1,1)*size;
+        QVector3D p = (((d.position*0.5-m_pos))/Chunk::scale) + 0.5*QVector3D(1,1.00,1)*size;
         QVector3D dir = m_lightDir*Chunk::scale*2;
         float l = 2.0;
         p+=dir*2;
-        for (int i=0;i<80;i+=1) {
+        for (int i=0;i<180;i+=1) {
             p+=dir;
             if (m_chunk->getReal(p.x(),p.y(),p.z())!=0) {
                 //                l-= 0.2;
-                l*=0.5;
+                l*=0.90;
                 if (l<0.1)
                     break;
             }
             if (i>8) i+=3;
+            if (i>80) i+=8;
         }
-
         //                        float dist = ((p*2 - d.position-QVector3D(0,-0.5,0)).length()*+0.5)*0.5;
         d.light = d.light*(l);
     }
