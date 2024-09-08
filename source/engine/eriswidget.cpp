@@ -22,6 +22,7 @@ void ErisWidget::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position
     mousePressPosition = QVector2D(e->position());
+
 }
 
 void ErisWidget::mouseReleaseEvent(QMouseEvent *e)
@@ -293,6 +294,10 @@ void ErisWidget::keyPressEvent(QKeyEvent* e)
 
     if (e->key() == Qt::Key_L) {
         SData::sdata.s_directionalLight = QVector3D(rand()%100-50,rand()%100,rand()%100-50).normalized();
+    }
+
+
+    if (e->key() == Qt::Key_P) {
 
     }
 

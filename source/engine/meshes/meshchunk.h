@@ -12,6 +12,9 @@
 
 
 
+
+
+
 class MeshChunk : public Mesh
 {
 public:
@@ -25,6 +28,7 @@ public:
     int m_noChunks = 0;
     float m_localScale = 1;
     bool m_isDone = false;
+    bool m_hasVBO = true;
     bool m_isGenerated = false;
     int m_shadowTick = 0;
     int m_currentLod = 1;
@@ -33,7 +37,6 @@ public:
     void Calculate();
     void calculateAmbientOcclusion();
     void calculateShadow();
-    void reGenerateAll();
     int getEstimatedLod();
 
 
@@ -65,6 +68,7 @@ public:
     void Setup();
 
     bool UpdateShadow();
+    void regenerate();
 
 public slots:
     void finishThread();

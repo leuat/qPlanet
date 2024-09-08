@@ -35,6 +35,8 @@ private:
     void Update() override;
 
     void initMeshes() override;
+    void mousePressEvent(QMouseEvent *e) override;
+
 
     void PaintGUI() override;
     void InitMaterials();

@@ -2,6 +2,7 @@
 #include "source/engine/sdata.h"
 #include <QThreadPool>
 #include <QDebug>
+#include "source/engine/settings.h"
 
 
 MeshChunk::MeshChunk(QVector3D pos, int type)
@@ -37,29 +38,30 @@ void MeshChunk::Calculate()
 
 void MeshChunk::calculateAmbientOcclusion()
 {
-    const int size = Chunk::size;
     for (auto& d : workData) {
         //auto p = m_pos + QVector3D((i-size/2.0)*m_scale,(j-size/2.0)*m_scale,(k-size/2.0)*m_scale);
-        QVector3D p2 = (((d.position*0.5-m_pos))/Chunk::scale) + 0.5*size*QVector3D(1,1,1) + QVector3D(0.25,0.25,0.25);
-        float s = 0.5;
-        //p2 = QVector3D((int)p2.x(),(int)p2.y(),(int)p2.z());
-        //                if (rand()%1000>998)
-        //                qDebug() << p2;
-        float a = 1.5;
-        float l = 1.0 -(
-                                 a*m_chunk->getReal(p2.x(),p2.y()+s,p2.z()-s)!=0 +
-                                 a*m_chunk->getReal(p2.x(),p2.y()+s,p2.z()+s)!=0 +
-                                 a*m_chunk->getReal(p2.x()-s,p2.y()+s,p2.z())!=0 +
-                                 a*m_chunk->getReal(p2.x()+s,p2.y()+s,p2.z())!=0
+        QVector3D p2 = (((d.position*0.5-m_pos))/Chunk::scale)/* + 0.5*Chunk::size*QVector3D(1,1,1)*/ + QVector3D(0.25,0.25,0.25);
+        float s = Chunk::scale*Settings::s.occlusionDistanceScale;
+        float a = 1.0;
+        float s2 = s;
+
+
+        float l = 1.5 -(
+                                 a*(m_chunk->getReal(p2.x(),p2.y()+s2,p2.z()-s)!=0) +
+                                 a*(m_chunk->getReal(p2.x(),p2.y()+s2,p2.z()+s)!=0) +
+                                 a*(m_chunk->getReal(p2.x()-s,p2.y()+s2,p2.z())!=0) +
+                                 a*(m_chunk->getReal(p2.x()+s,p2.y()+s2,p2.z())!=0)
 /*
                                    m_chunk->getReal(p2.x()-1,p2.y()+1,p2.z()-1)!=0 +
                                    m_chunk->getReal(p2.x()-1,p2.y()+1,p2.z()+1)!=0 +
                                    m_chunk->getReal(p2.x()-1,p2.y()+1,p2.z()-1)!=0 +
                                    m_chunk->getReal(p2.x()+1,p2.y()+1,p2.z()+1)!=0
 */
-                            )*0.75;
+                         )*Settings::s.occlusionStrengthScale;
 
         //                        float dist = ((p*2 - d.position-QVector3D(0,-0.5,0)).length()*+0.5)*0.5;
+//        float l = 1.0;
+        if (l>1.0) l = 1.0;
         d.light = QVector3D(1.0, 1.0, 1.0)*(l);
     }
 
@@ -71,23 +73,22 @@ void MeshChunk::calculateShadow()
     //    if (m_currentLod!=0)
     //      return;
 
-    const int size = Chunk::size;
-
     for (auto& d : workData) {
         //auto p = m_pos + QVector3D((i-size/2.0)*m_scale,(j-size/2.0)*m_scale,(k-size/2.0)*m_scale);
-        QVector3D p = (((d.position*0.5-m_pos))/Chunk::scale) + 0.5*QVector3D(1,1.00,1)*size;
+        QVector3D p = (((d.position*0.5-m_pos))/Chunk::scale);// + 0.5*QVector3D(1,1.00,1)*size;
         QVector3D dir = m_lightDir*Chunk::scale*2;
         float l = 2.0;
         p+=dir*2;
-        for (int i=0;i<180;i+=1) {
+        for (int i=0;i<Settings::s.shadowSteps;i+=1) {
             p+=dir;
             if (m_chunk->getReal(p.x(),p.y(),p.z())!=0) {
                 //                l-= 0.2;
-                l*=0.90;
-                if (l<0.1)
+                l*=Settings::s.shadowMultiplier;
+                if (l<Settings::s.shadowThreshold)
                     break;
             }
             if (i>8) i+=3;
+            if (i>40) i+=8;
             if (i>80) i+=8;
         }
         //                        float dist = ((p*2 - d.position-QVector3D(0,-0.5,0)).length()*+0.5)*0.5;
@@ -119,7 +120,7 @@ bool MeshChunkAll::UpdateShadow()
         return;
 */
 
-    if (/*m_shadowTick == 0 && */((m_meshChunks[0]->m_lightDir.normalized()-SData::sdata.s_directionalLight.normalized()).length()>0.10))
+    if (/*m_shadowTick == 0 && */((m_meshChunks[0]->m_lightDir.normalized()-SData::sdata.s_directionalLight.normalized()).length()>0.10 + (rand()%50)/100.0))
     {
 
 //        qDebug() << (m_meshChunks[0]->m_lightDir)<<SData::sdata.s_directionalLight.normalized() << m_meshChunks[0]->m_isDone;
@@ -132,6 +133,7 @@ bool MeshChunkAll::UpdateShadow()
     }
     return false;
 }
+
 
 void MeshChunkAll::finishThread()
 {
@@ -146,33 +148,26 @@ void MeshChunkAll::finishThread()
             m->isBuilt = true;
             m->m_shadowsOnly = false;
             m->m_isDone = true;
+            m->m_hasVBO = true;
         }
     }
 
     m_isDone = true;
 }
 
-void MeshChunk::reGenerateAll()
+void MeshChunkAll::regenerate()
 {
-    return;
-    /*
-    if (ignore())
-        return;
+
+ //    if (ignore())
+   //     return;
 
     m_isDone = false;
-
-    const int size = Chunk::size;
-    m_scale = m_orgScale;
+     m_ignore = false;
     m_isGenerated = false;
-    workIndices.clear();
-    workData.clear();
-    m_lightDir = QVector3D(0,0,-100);
-
-    //    qDebug() << "Regenerating "<<rand()%100;
-    //  m_isDone = false;
-    //start();
+    m_chunk->m_changed = false;
+    m_chunk->m_isGenerated = false;
     QThreadPool::globalInstance()->start(this,0);
-*/
+
 }
 
 int MeshChunk::getEstimatedLod()
@@ -211,7 +206,8 @@ void MeshChunk::GenerateMesh()
 
                 auto val = m_chunk->get(i,j,k);
                 if (val-1==m_type) {
-                    QVector3D p = QVector3D((i-size/2.0)*s,(j-size/2.0)*s,(k-size/2.0)*s) + m_pos;
+//                    QVector3D p = QVector3D((i-size/2.0)*s,(j-size/2.0)*s,(k-size/2.0)*s) + m_pos;
+                    QVector3D p = QVector3D(i,j,k)*s + m_pos;
 
 
                     bool f1 = m_chunk->get(i,j,k-1)!=val;
@@ -307,20 +303,22 @@ void MeshChunkAll::Generate()
             for (int i=0;i<size;i++)
                 for (int j=0;j<size;j++)
                     for (int k=0;k<size;k++) {
-                        auto p = m_pos + QVector3D((i-size/2.0)*Chunk::scale,(j-size/2.0)*Chunk::scale,(k-size/2.0)*Chunk::scale);
-                        auto val = WorldGen::s.generate(p);
-                        m_chunk->set(i,j,k,val);
+                        auto p = m_pos + QVector3D(i,j,k)*Chunk::scale;
+                        auto val = WorldGen::s.generate(p, true);
+                        if (m_chunk->get(i,j,k)==Chunk::empty)
+//                            ChunkData::s.set(p,val);
+                            m_chunk->set(i,j,k,val);
                         sum+=val;
                     }
             sum/=(double)(size*size*size);
-//            if (sum-(int)sum!=0.0) {
+//            if (sum-(int)sum==0.0) {
             if (sum==0.0) {
-                m_chunk->m_ignore = true;
-                m_ignore = true;
+//                m_chunk->m_ignore = true;
             }
             m_chunk->m_isGenerated = true;
         }
         m_isGenerated = true;
+        m_ignore = m_chunk->m_ignore;
     }
 
 }
@@ -374,9 +372,9 @@ void MeshChunkAll::run() {
 void MeshChunkAll::Setup()
 {
     if (m_meshChunks.count()==0)
-        m_meshChunks.resize(4);
+        m_meshChunks.resize(Settings::s.noMaterials);
 
-    for (int i=0;i<4;i++) {
+    for (int i=0;i<Settings::s.noMaterials;i++) {
          m_meshChunks[i] = QSharedPointer<MeshChunk>(new MeshChunk(m_pos,i));
     }
 

@@ -47,6 +47,7 @@ SOURCES += \
     source/engine/misc/util.cpp \
     source/engine/output/postprocess.cpp \
     source/engine/sdata.cpp \
+    source/engine/settings.cpp \
     source/engine/widget/glwidget.cpp \
     source/engine/world.cpp \
     source/main.cpp \
@@ -88,6 +89,7 @@ HEADERS += \
     source/engine/misc/util.h \
     source/engine/output/postprocess.h \
     source/engine/sdata.h \
+    source/engine/settings.h \
     source/engine/widget/glwidget.h \
     source/engine/world.h \
     source/mainwidget.h \

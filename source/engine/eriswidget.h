@@ -41,7 +41,7 @@ protected:
     bool m_isStart = true;
     bool m_isInMenu = false;
 
-    void mousePressEvent(QMouseEvent *e) override;
+    virtual void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
     void timerEvent(QTimerEvent *e) override;
 

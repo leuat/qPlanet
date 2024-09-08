@@ -205,8 +205,8 @@ void main()
     col = sqrt(col);
 //    if (length(col)<0.4) col = vec3(0.1,0.08,0.09)*2.0;
 
-    float p = noise(v_pos*0.05);
-    float p2 = int((noise(v_pos*20.1)*16.0))/16.0;
+    float p = noise(v_pos*0.11);
+    float p2 = int((noise(v_pos*40.1)*16))/16.0;
 
     vec3 color = saturate(u_color,p*0.8+0.2);
 

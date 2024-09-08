@@ -9,7 +9,7 @@
 MainWidget::MainWidget():ErisWidget()
 {
     QThread::currentThread()->setPriority(QThread::HighestPriority);
-//    SimplexNoise::seed(1);
+//    SimplexNoise::seed(2);
 }
 
 
@@ -40,19 +40,23 @@ void MainWidget::AddChunk()
     auto dirt = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
     auto sea = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
     auto snow = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
+    auto bush = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
     QVector<QSharedPointer<Material>> mats;
     mats.append(grass);
     mats.append(sea);
     mats.append(dirt);
     mats.append(snow);
-    QSharedPointer<MeshChunks> mc  = QSharedPointer<MeshChunks>(new MeshChunks(16,6,0.2,mats));
-    Chunk::scale = 0.2;
+    mats.append(bush);
+    Chunk::scale = Settings::s.blockScale;
+    // 16, 5
+    QSharedPointer<MeshChunks> mc  = QSharedPointer<MeshChunks>(new MeshChunks(Settings::s.worldSizeXZ,Settings::s.worldSizeY,mats));
     world->m_entityList["root"]->m_children.append(mc);
     world->m_entityList["chunk"] = mc.get();
     grass->mData.color = QVector3D(0.4,1.0,0.3);
     dirt->mData.color = QVector3D(0.7,0.7,0.7);
     sea->mData.color = QVector3D(0.4,0.6,1.0) ;
     snow->mData.color = QVector3D(1.9,1.9,1.9);
+    bush->mData.color = QVector3D(0.1,0.6,0.1);
     mc->m_cameraPointer = &world->m_camera.m_position;
     mc->m_targetPointer = &world->m_camera.m_target;
     SData::sdata.camera = &world->m_camera.m_position;
@@ -183,8 +187,8 @@ void MainWidget::Update()
     float r = 100.0;
     double time = SData::sdata.time;
 //    time = 1;
-    time*=0.5;
-  //  SData::sdata.s_directionalLight = QVector3D(r*cos(time/130.0),r*cos(time/171.0)+r*1.3,r*sin(time/130.0));
+    time*=0.1;
+ //   SData::sdata.s_directionalLight = QVector3D(r*cos(time/130.0),r*cos(time/171.0)+r*1.3,r*sin(time/130.0));
   //  SData::sdata.s_directionalLight = QVector3D(0.7,0.7,0.7).normalized();
 
     world->Update();
@@ -201,6 +205,29 @@ void MainWidget::initMeshes()
     world->m_meshes["fox"] = QSharedPointer<MeshObject>(new MeshObject("/Users/leuat/code/qPlanet/objects/fox.obj",0.2, QVector3D(0,-2,0),false));
 //    world->m_meshes["brain"] = QSharedPointer<MeshObject>(new MeshObject("/Users/leuat/code/qPlanet/objects/brain.obj",25.0, QVector3D(0,0,0),true));
 */
+}
+
+void MainWidget::mousePressEvent(QMouseEvent *e)
+{
+    // Save mouse press position
+    mousePressPosition = QVector2D(e->position());
+
+//    qDebug() << world->m_camera.coord2ray(mousePressPosition.x(), mousePressPosition.y(),width(),height());
+//    QVector3D ray = world->m_camera.coord2ray(width()/2, height()/2,width(),height());
+    QVector3D ray = (world->m_camera.m_target - world->m_camera.m_position).normalized()*0.2;
+    QVector3D org = world->m_camera.m_position;
+    qDebug() << org;
+    auto p = QVector3D(org.x()*0.5, org.y(), org.z()*0.5) + ray*4;
+
+    ChunkData::s.set(p,1);
+    auto oc = ChunkData::s.get(p);
+//    qDebug() << oc->m_index << ChunkData::idxtoInt(oc->m_index);
+     MeshChunks* mc = (MeshChunks*)world->m_entityList["chunk"];
+    for (auto& c: mc->m_chunks)
+        if (oc == c->m_chunk) {
+            c->regenerate();
+        }
+
 }
 
 void MainWidget::PaintGUI()

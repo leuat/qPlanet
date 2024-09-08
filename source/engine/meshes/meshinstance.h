@@ -37,7 +37,6 @@ public:
     QVector<QVector3D> m_ignoreList;
     int m_size, m_sizeY;
     bool m_isRunning = false;
-    float m_scale;
     int curY = 0;
     std::atomic<bool> m_isReady = true;
     QVector<QSharedPointer<Material>> m_materials;
@@ -45,7 +44,7 @@ public:
     int time2 = 0;
     bool m_isDone = true;
     const int removalScaleAdd = 25;
-    MeshChunks(int size, int sizey, float scale, QVector<QSharedPointer<Material>> mat);
+    MeshChunks(int size, int sizey, QVector<QSharedPointer<Material>> mat);
     void run() override;
 
     void Update() override;
