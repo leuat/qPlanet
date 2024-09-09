@@ -29,6 +29,8 @@ public:
     QSharedPointer<QOpenGLShaderProgram> LinkShader(QString vert, QString frag);
 
     void CompileShaders();
+
+    static void fatalError(QString s);
 };
 
 #endif // SDATA_H

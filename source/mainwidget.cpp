@@ -10,6 +10,8 @@ MainWidget::MainWidget():ErisWidget()
 {
     QThread::currentThread()->setPriority(QThread::HighestPriority);
 //    SimplexNoise::seed(2);
+
+    Settings::s.Load("/Users/leuat/code/qPlanet/data/world.json");
 }
 
 
@@ -33,30 +35,11 @@ void MainWidget::AddWalls() {
 
 void MainWidget::AddChunk()
 {
-    //    auto* ch = world->AddMeshInstance(new MeshChunks(16,1,new MaterialFlat()), "chunk0","root",QVector3D(0,0,0),"chunk",new MaterialFlat());
-    //  ch->m_material->mData.color = QVector3D(0.8,0.7,1.0);
-
-    auto grass = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
-    auto dirt = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
-    auto sea = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
-    auto snow = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
-    auto bush = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
-    QVector<QSharedPointer<Material>> mats;
-    mats.append(grass);
-    mats.append(sea);
-    mats.append(dirt);
-    mats.append(snow);
-    mats.append(bush);
     Chunk::scale = Settings::s.blockScale;
-    // 16, 5
-    QSharedPointer<MeshChunks> mc  = QSharedPointer<MeshChunks>(new MeshChunks(Settings::s.worldSizeXZ,Settings::s.worldSizeY,mats));
+    QSharedPointer<MeshChunks> mc  = QSharedPointer<MeshChunks>(new MeshChunks(Settings::s.worldSizeXZ,Settings::s.worldSizeY,getMaterialList()));
     world->m_entityList["root"]->m_children.append(mc);
     world->m_entityList["chunk"] = mc.get();
-    grass->mData.color = QVector3D(0.4,1.0,0.3);
-    dirt->mData.color = QVector3D(0.7,0.7,0.7);
-    sea->mData.color = QVector3D(0.4,0.6,1.0) ;
-    snow->mData.color = QVector3D(1.9,1.9,1.9);
-    bush->mData.color = QVector3D(0.1,0.6,0.1);
+
     mc->m_cameraPointer = &world->m_camera.m_position;
     mc->m_targetPointer = &world->m_camera.m_target;
     SData::sdata.camera = &world->m_camera.m_position;

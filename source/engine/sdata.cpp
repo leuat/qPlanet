@@ -30,3 +30,9 @@ void SData::CompileShaders()
 //    shaderPrograms["texture"] = LinkShader(":/shaders/vert_texture.glsl",":/shaders/frag_texture.glsl");
     shaderPrograms["normal"] = LinkShader(":/shaders/vert_normal.glsl",":/shaders/frag_normal.glsl");
 }
+
+void SData::fatalError(QString s)
+{
+    qDebug() << s;
+    exit(1);
+}

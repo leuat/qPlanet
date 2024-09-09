@@ -1,12 +1,32 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include <QJsonObject>
+#include <QString>
+#include <QJsonDocument>
+#include <QVector3D>
+
+class BlockType {
+public:
+    BlockType() {}
+    BlockType(QString material, QString name, int id, QVector3D color):m_material(material),m_name(name),m_id(id), m_color(color) {
+
+    }
+    QString m_name, m_material;
+    int m_id;
+    QVector3D m_color;
+};
+
 class Settings
 {
 public:
     Settings();
 
     static Settings s;
+
+    QMap<QString,QSharedPointer<BlockType>> blocks;
+
+    QVector3D toQVector3D(QJsonValue jv);
 
     // Lighting settings
     float occlusionDistanceScale = 2.0;
@@ -17,7 +37,6 @@ public:
     float shadowMultiplier = 0.9;
     float shadowThreshold = 0.10;
 
-    float blockScale = 0.2;
 
     int noMaterials = 5;
 
@@ -25,7 +44,17 @@ public:
     static const int chunkSize = 32;
     int worldSizeXZ = 16;
     int worldSizeY = 6;
+    float blockScale = 0.2;
 
+
+    double getDouble(QString a, QString b, QString c);
+    void Load(QString file);
+
+
+private:
+
+    void loadBlocks();
+    QJsonDocument m_json;
 
 
 };

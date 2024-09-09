@@ -205,7 +205,7 @@ void MeshChunk::GenerateMesh()
             for (int k=0;k<sz;k++) {
 
                 auto val = m_chunk->get(i,j,k);
-                if (val-1==m_type) {
+                if (val==m_type) {
 //                    QVector3D p = QVector3D((i-size/2.0)*s,(j-size/2.0)*s,(k-size/2.0)*s) + m_pos;
                     QVector3D p = QVector3D(i,j,k)*s + m_pos;
 
@@ -362,7 +362,7 @@ void MeshChunkAll::run() {
         return;
     }
 
-    for (int i=0;i<m_meshChunks.count();i++)
+    for (int i=1;i<m_meshChunks.count();i++)
         m_meshChunks[i]->Calculate();
 //    qDebug() << "HERRE" <<m_chunk->m_pos;
     emit meshReady();

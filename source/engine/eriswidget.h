@@ -51,6 +51,9 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
 
+    QVector<QSharedPointer<Material>> getMaterialList();
+
+
     virtual void PaintGUI() {}
 
     bool eventFilter(QObject *obj, QEvent *event) override;

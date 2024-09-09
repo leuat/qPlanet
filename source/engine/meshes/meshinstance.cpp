@@ -192,7 +192,7 @@ void MeshChunks::Render(QMatrix4x4 projection)
 
     m_renderChunks = m_chunks;
 
-    for (int type = 0; type <Settings::s.noMaterials; type++ ) {
+    for (int type = 1; type <Settings::s.noMaterials; type++ ) {
         auto material = m_materials[type];
 
         if (material==nullptr)

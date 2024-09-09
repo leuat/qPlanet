@@ -1,0 +1,59 @@
+{
+    "worldSettings": {
+        "light" : {
+            "occlusionDistanceScale" : 2.0,
+            "occlusionStrengthScale" : 0.25,
+            "shadowMultiplier" : 0.85,
+            "shadowSteps" : 200,
+            "shadowThreshold" : 0.15
+
+        },
+        "world" : {
+            "worldSizeXZ" : 16,
+            "worldSizeY" : 6,
+            "blockScale" : 0.2
+
+        }
+    },
+    "blocks": [
+        {
+            "material":"regular_block",
+            "name":"air",
+            "color": [0.0,0.0,0.0],
+            "id": 0
+        },
+        {
+            "material":"regular_block",
+            "name":"grass",
+            "color": [0.2,0.9,0.05],
+            "id": 1
+        },
+        {
+            "material":"regular_block",
+            "name":"sea",
+            "color": [0.0,0.0,1.0],
+            "id": 2
+        },
+        {
+            "material":"regular_block",
+            "name":"dirt",
+            "color": [0.9,0.5,0.1],
+            "id": 3
+        },
+        {
+            "material":"regular_block",
+            "name":"snow",
+            "color": [1.0,1.0,1.0],
+            "id": 4
+        },
+        {
+            "material":"regular_block",
+            "name":"bush",
+            "color": [0,1,0],
+            "id": 5
+        }
+
+    ]
+
+
+}

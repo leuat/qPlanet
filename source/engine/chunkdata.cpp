@@ -35,10 +35,11 @@ int WorldGen::generate(QVector3D pos, bool init)
     float ground = pos.y()+20;
 
     if (pos.y()+25<0)
-        v = 2; // water
+        v = Settings::s.blocks["sea"]->m_id; // water
 
+    // dirt
     if (pos.y()+12+ls1>0)
-        v = 3;
+        v = Settings::s.blocks["dirt"]->m_id;
 
 
     if (pos.y()-5+gh>0)

@@ -330,6 +330,25 @@ void ErisWidget::keyReleaseEvent(QKeyEvent *e)
 
 }
 
+QVector<QSharedPointer<Material> > ErisWidget::getMaterialList()
+{
+    QVector<QSharedPointer<Material> > mats;
+    mats.resize(Settings::s.blocks.size());
+    for (auto& b : Settings::s.blocks) {
+        QSharedPointer<Material> m;
+        if (b->m_material=="regular_block")
+            m = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
+
+        if (m==nullptr)
+            SData::fatalError("Unknown material: "+b->m_material);
+
+        m->mData.color = b->m_color;
+        mats[b->m_id] = m;
+        qDebug() << b->m_name << b->m_id << b->m_color;
+    }
+    return mats;
+}
+
 bool ErisWidget::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::MouseMove)
