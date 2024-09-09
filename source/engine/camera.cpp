@@ -96,7 +96,7 @@ void Camera::RotateHorisontal(float angle)
 
 void Camera::setupViewmatrix() {
     m_projection.setToIdentity();
-    m_projection.perspective(m_fov,m_aspect,1,20000.0);
+    m_projection.perspective(m_fov,m_aspect,0.01,400.0);
     m_viewMatrix.setToIdentity();
     m_viewMatrix.lookAt(m_position, m_target, m_up);
     m_invVP = (m_projection*m_viewMatrix).inverted();

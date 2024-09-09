@@ -28,8 +28,10 @@ int WorldGen::generate(QVector3D pos, bool init)
     float ls2 = sn.noise(pos.z()*s/15.0, pos.x()*s/16.23)*1.9*amp;
     float trees = sn.noise(pos.z()*s*14.31, pos.x()*s*14.41);
     h+=gh-12+ls1;
+    auto oh = (h-6)*1.1;
     h*=ls2;
-    int v = 1;
+    int v = Settings::s.blocks["dirt"]->m_id;
+;
     // height
 
     float ground = pos.y()+20;
@@ -38,17 +40,13 @@ int WorldGen::generate(QVector3D pos, bool init)
         v = Settings::s.blocks["sea"]->m_id; // water
 
     // dirt
-    if (pos.y()+12+ls1>0)
-        v = Settings::s.blocks["dirt"]->m_id;
+//    if (pos.y()+12+ls1>0)
 
 
-    if (pos.y()-5+gh>0)
-        v = 4;
 
     float curHeight = ground-h;
     if (init) {
-        if (v==1 && trees>0.99 && ground>h && ground <h+0.1) {
-            ChunkData::s.mut.lock();
+        if (v==Settings::s.blocks["dirt"]->m_id && trees>0.99 && ground>h && ground <h+0.1) {
             auto np = QVector3D(pos - QVector3D(0,hShift,0));
 //            np = QVector3D(round((np.x()/4)*4.0),np.y(),round((np.z()/4)*4.0));
 
@@ -56,6 +54,7 @@ int WorldGen::generate(QVector3D pos, bool init)
 //d            np = QVector3D((int)(np.x()*s), (int)(np.y()*s),(int)(np.z()*s));
 //            qDebug() << np;
 
+            ChunkData::s.mut.lock();
             if (!ChunkData::s.m_newEntitiesPos.contains(np)) {
                 ChunkData::s.m_newEntities.append(QSharedPointer<ChunkEntity>(new ChunkTree(np)));
                 ChunkData::s.m_newEntitiesPos.append(np);
@@ -82,6 +81,15 @@ int WorldGen::generate(QVector3D pos, bool init)
     }
 
 
+    if (ground<oh-1.0 && v!=2)
+        return Settings::s.blocks["stone"]->m_id;;
+
+    if (ground<h - 0.3 && v!=2)
+        return Settings::s.blocks["stone"]->m_id;;
+
+
+    if (pos.y()+gh+ls1*0.5>0)
+        v = Settings::s.blocks["snow"]->m_id;
 
     if (ground>h && v!=2)
         return 0;

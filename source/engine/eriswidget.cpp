@@ -217,7 +217,7 @@ void ErisWidget::resizeGL(int width, int height)
 //    aspect = 2;
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 0.0001, zFar = 700.0, fov = 80.0;
+    const qreal zNear = 0.0001, zFar = 70.0, fov = 80.0;
 
     if (world==nullptr)
         return;
@@ -338,13 +338,24 @@ QVector<QSharedPointer<Material> > ErisWidget::getMaterialList()
         QSharedPointer<Material> m;
         if (b->m_material=="regular_block")
             m = QSharedPointer<Material>(new MaterialBlock(&world->m_camera));
+        if (b->m_material=="textured_block")
+            m = QSharedPointer<Material>(new MaterialBlockTexture(&world->m_camera));
 
         if (m==nullptr)
             SData::fatalError("Unknown material: "+b->m_material);
 
         m->mData.color = b->m_color;
         mats[b->m_id] = m;
-        qDebug() << b->m_name << b->m_id << b->m_color;
+        if (b->m_texture!="") {
+            auto base = "data/textures/block/"+b->m_texture;
+            if (QFile::exists(base+".png"))
+                mats[b->m_id]->texture = Material::loadTexture(base+".png");
+            else
+                SData::fatalError("Could not load regular texture : "+base+".png for material "+b->m_name);
+            if (QFile::exists(base+"_n.png"))
+                mats[b->m_id]->normal_map = Material::loadTexture(base+"_n.png");
+        }
+         qDebug() << b->m_name << b->m_id << b->m_color;
     }
     return mats;
 }

@@ -55,6 +55,13 @@ MaterialBlock::MaterialBlock(Camera *camera)
     m_camera = camera;
 }
 
+MaterialBlockTexture::MaterialBlockTexture(Camera *camera):MaterialBlock(camera)
+{
+    program = SData::sdata.shaderPrograms["textured_block"].get(); //    Link(":/shaders/vert_flat.glsl",":/shaders/frag_flat.glsl");
+    m_camera = camera;
+
+}
+
 void MaterialFlat::bind(QMatrix4x4 mvp, const QMatrix3x3 rot)
 {
     program->bind();
@@ -73,6 +80,29 @@ void MaterialBlock::bind(QMatrix4x4 mvp, const QMatrix3x3 rot)
     auto dir = (m_camera->m_position-m_camera->m_target).normalized();
     program->setUniformValue("camForward", dir);
     program->setUniformValue("camRight", m_camera->m_up.normalized());
+
+}
+
+void MaterialBlockTexture::bind(QMatrix4x4 mvp, const QMatrix3x3 rot)
+{
+    program->bind();
+    setMatrices(mvp,rot);
+    setDefaults(mData);
+    program->setUniformValue("sun", SData::sdata.s_directionalLight.normalized() );
+    program->setUniformValue("camPos", m_camera->m_position);
+    auto dir = (m_camera->m_position-m_camera->m_target).normalized();
+    program->setUniformValue("camForward", dir);
+    program->setUniformValue("camRight", m_camera->m_up.normalized());
+    program->setUniformValue("tex_scale", uvScale);
+    program->setUniformValue("uv_scale", uvScale);
+    if (normal_map!=nullptr) {
+        normal_map->bind(1);
+        program->setUniformValue("tex2", 1);
+    }
+    if (texture!=nullptr) {
+        texture->bind(0);
+        program->setUniformValue("tex1", 0);
+    }
 
 }
 

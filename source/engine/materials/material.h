@@ -43,7 +43,7 @@ public:
 
     virtual void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) = 0;
 
-    QOpenGLTexture* loadTexture(QString txt);
+    static QOpenGLTexture* loadTexture(QString txt);
 
 
 
@@ -59,6 +59,13 @@ class MaterialBlock : public Material {
 public:
     Camera* m_camera;
     MaterialBlock(Camera* camera);
+    void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
+};
+
+class MaterialBlockTexture : public MaterialBlock {
+public:
+    Camera* m_camera;
+    MaterialBlockTexture(Camera* camera);
     void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
 };
 

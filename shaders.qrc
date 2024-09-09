@@ -18,5 +18,7 @@
         <file>shaders/atmosphere.vert</file>
         <file>shaders/block.frag</file>
         <file>shaders/block.vert</file>
+        <file>shaders/block_texture.frag</file>
+        <file>shaders/block_texture.vert</file>
     </qresource>
 </RCC>

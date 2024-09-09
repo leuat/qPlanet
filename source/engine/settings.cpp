@@ -69,6 +69,7 @@ void Settings::loadBlocks()
         blocks[bt["name"].toString()] = QSharedPointer<BlockType>(new BlockType(
             bt["material"].toString(),
             bt["name"].toString(),
+            bt["texture"].toString(),
             bt["id"].toInt(),
             toQVector3D(bt["color"])
             ));

@@ -9,10 +9,10 @@
 class BlockType {
 public:
     BlockType() {}
-    BlockType(QString material, QString name, int id, QVector3D color):m_material(material),m_name(name),m_id(id), m_color(color) {
+    BlockType(QString material, QString name, QString texture, int id, QVector3D color):m_material(material),m_name(name),m_texture(texture),m_id(id), m_color(color) {
 
     }
-    QString m_name, m_material;
+    QString m_name, m_material, m_texture;
     int m_id;
     QVector3D m_color;
 };

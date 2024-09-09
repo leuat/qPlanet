@@ -11,7 +11,7 @@ MainWidget::MainWidget():ErisWidget()
     QThread::currentThread()->setPriority(QThread::HighestPriority);
 //    SimplexNoise::seed(2);
 
-    Settings::s.Load("/Users/leuat/code/qPlanet/data/world.json");
+    Settings::s.Load("data/world.json");
 }
 
 

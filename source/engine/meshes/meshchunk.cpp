@@ -305,6 +305,9 @@ void MeshChunkAll::Generate()
                     for (int k=0;k<size;k++) {
                         auto p = m_pos + QVector3D(i,j,k)*Chunk::scale;
                         auto val = WorldGen::s.generate(p, true);
+                        // if above block is air, set grass
+                        if (val==Settings::s.blocks["dirt"]->m_id && m_chunk->getReal(i,j+1,k)==0)
+                            val = Settings::s.blocks["grass"]->m_id;
                         if (m_chunk->get(i,j,k)==Chunk::empty)
 //                            ChunkData::s.set(p,val);
                             m_chunk->set(i,j,k,val);
