@@ -27,11 +27,17 @@ void Mesh::Render(QOpenGLShaderProgram *program)
     if (!indexBuf.isCreated())
         return;
 
-    if (cull)
+    if (cull) {
         glEnable(GL_CULL_FACE);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
     else
         glDisable(GL_CULL_FACE);
 
+    if (blend)
+        glEnable(GL_BLEND);
+    else
+        glDisable(GL_BLEND);
 
     vao.bind();
 
@@ -381,6 +387,7 @@ MeshRoom::MeshRoom(int n, double scale, int walls)
 MeshPlane::MeshPlane(float r, int n, bool build)
 {
     cull = false;
+    blend = true;
     auto p3 = QVector3D(r,0,-r);
     auto p4 = QVector3D(-r,0,-r);
     auto p7 = QVector3D(r,0,r);
@@ -389,5 +396,6 @@ MeshPlane::MeshPlane(float r, int n, bool build)
     generatePlane(p8,p7,p3,p4,n);
     if (build)
         Build();
+
 
 }

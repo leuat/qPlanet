@@ -17,6 +17,7 @@ void Material::setDefaults(MaterialData& d)
     program->setUniformValue("u_light_dir",SData::sdata.s_directionalLight);
     program->setUniformValue("u_light_col",SData::sdata.s_directionalLightColor);
     program->setUniformValue("u_normalIntensity", 1-d.normalIntensity );
+    program->setUniformValue("u_time", (float)SData::sdata.time );
 
 }
 

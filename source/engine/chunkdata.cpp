@@ -35,13 +35,15 @@ int WorldGen::generate(QVector3D pos, bool init)
     // height
 
     float ground = pos.y()+20;
-
+/*
     if (pos.y()+25<0)
         v = Settings::s.blocks["sea"]->m_id; // water
-
+*/
     // dirt
 //    if (pos.y()+12+ls1>0)
 
+    if (ground<(Settings::s.waterHeight*Chunk::scale+1))
+        v = Settings::s.blocks["sand"]->m_id;;
 
 
     float curHeight = ground-h;
@@ -91,7 +93,10 @@ int WorldGen::generate(QVector3D pos, bool init)
     if (pos.y()+gh+ls1*0.5>0)
         v = Settings::s.blocks["snow"]->m_id;
 
-    if (ground>h && v!=2)
+
+
+
+    if (ground>h)
         return 0;
 
 

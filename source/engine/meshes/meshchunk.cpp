@@ -44,9 +44,12 @@ void MeshChunk::calculateAmbientOcclusion()
         float s = Chunk::scale*Settings::s.occlusionDistanceScale;
         float a = 1.0;
         float s2 = s;
+        float h = d.position.y()-Settings::s.waterHeight;
+        if (h>0) h=0;
+        float l = 1.5 + h*0.5;
 
 
-        float l = 1.5 -(
+        l -= (
                                  a*(m_chunk->getReal(p2.x(),p2.y()+s2,p2.z()-s)!=0) +
                                  a*(m_chunk->getReal(p2.x(),p2.y()+s2,p2.z()+s)!=0) +
                                  a*(m_chunk->getReal(p2.x()-s,p2.y()+s2,p2.z())!=0) +

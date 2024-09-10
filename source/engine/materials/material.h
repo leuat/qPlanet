@@ -35,7 +35,7 @@ public:
     Material();
 
     Camera* m_camera;
-
+    int time = 0;
     void release();
     void setMatrices(const QMatrix4x4& mvp, const QMatrix3x3& rot);
     void setDefaults(MaterialData& d);

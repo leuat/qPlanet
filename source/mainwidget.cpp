@@ -35,7 +35,7 @@ void MainWidget::AddWalls() {
 
 void MainWidget::AddChunk()
 {
-    /*
+
     Chunk::scale = Settings::s.blockScale;
     QSharedPointer<MeshChunks> mc  = QSharedPointer<MeshChunks>(new MeshChunks(Settings::s.worldSizeXZ,Settings::s.worldSizeY,getMaterialList()));
     world->m_entityList["root"]->m_children.append(mc);
@@ -44,7 +44,7 @@ void MainWidget::AddChunk()
     mc->m_cameraPointer = &world->m_camera.m_position;
     mc->m_targetPointer = &world->m_camera.m_target;
     SData::sdata.camera = &world->m_camera.m_position;
-*/
+
     if (Settings::s.hasWater) {
 
         auto wi = world->AddMeshInstance(new MeshInstance(), "water","root",

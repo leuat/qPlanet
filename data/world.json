@@ -32,8 +32,8 @@
         },
         {
             "material":"regular_block",
-            "name":"sea",
-            "color": [0.0,0.0,1.0],
+            "name":"sand",
+            "color": [1.0,0.9,0.11],
             "id": 2
         },
         {

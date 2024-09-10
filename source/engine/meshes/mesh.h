@@ -33,6 +33,7 @@ public:
     QOpenGLBuffer indexBuf;
     bool isBuilt = false;
     bool cull = true;
+    bool blend = false;
 
 
     QVector<QSharedPointer<Mesh>> children;

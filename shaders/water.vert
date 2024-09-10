@@ -9,6 +9,8 @@ precision mediump float;
 uniform mat4 mvp_matrix;
 uniform mat3 rot_matrix;
 
+uniform float u_time;
+
 layout(location = 0) in vec3 a_position;
 layout(location = 1) in vec2 a_texcoord;
 layout(location = 2) in vec3 a_normal;
@@ -19,7 +21,10 @@ out vec2 v_texcoord;
 out vec3 v_normal;
 out vec3 v_pos;
 out vec3 v_light;
-out vec3 s_pos;
+out vec4 s_pos;
+out vec4 wind;
+
+
 
 void main()
 {
@@ -32,5 +37,16 @@ void main()
     v_normal = rot_matrix*a_normal;
     v_pos = a_position;//-vec3(0.0,0.0,-5);
     v_light = a_light;
-    s_pos = vec3(gl_Position.xyz);
+    s_pos =  gl_Position;
+
+    vec2 uv = a_position.xz;
+
+    vec2 windDir = normalize(vec2(1,1));
+
+    wind.xy = windDir;
+    wind.zw = windDir * u_time/10.0;
+
+    v_texcoord*=100.0;
+
+
 }

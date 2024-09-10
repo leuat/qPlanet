@@ -39,7 +39,7 @@ public:
 
 
     int noMaterials = 5;
-    float waterHeight = -5;
+    float waterHeight = -25.9;
     int waterSize = 1000;
     int waterGridSize = 16;
 
