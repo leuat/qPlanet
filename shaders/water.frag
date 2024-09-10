@@ -226,4 +226,5 @@ void main() {
     // post
     //fragColor = vec4(pow(color,vec3(0.65)), 0.6);
     fragColor = vec4(pow(color,vec3(0.65)), 0.8);
+    fragColor.xyz *= v_light;
 }

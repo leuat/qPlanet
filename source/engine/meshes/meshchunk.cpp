@@ -46,7 +46,7 @@ void MeshChunk::calculateAmbientOcclusion()
         float s2 = s;
         float h = d.position.y()-Settings::s.waterHeight;
         if (h>0) h=0;
-        float l = 1.5 + h*0.5;
+        float l = 1.2 + h*0.5;
 
 
         l -= (

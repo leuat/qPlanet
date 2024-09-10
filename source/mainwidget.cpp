@@ -47,7 +47,7 @@ void MainWidget::AddChunk()
 
     if (Settings::s.hasWater) {
 
-        auto wi = world->AddMeshInstance(new MeshInstance(), "water","root",
+        water = world->AddMeshInstance(new MeshInstance(), "water","root",
                                          QVector3D(0,Settings::s.waterHeight,0),"watermesh",
                                          new MaterialWater(&world->m_camera,
                                              //                                    "/Users/leuat/Dropbox/code/code/TangyMinecraft/Assets/TangyTextures/Assets/ExportedTextures/Gnarled1/Gnarled1_Color.png", QVector2D(13,13),
@@ -57,7 +57,7 @@ void MainWidget::AddChunk()
                                              )
                                           );
     }
-
+//    calculateWaterShadow();
 }
 
 
@@ -189,6 +189,10 @@ void MainWidget::Update()
   //  SData::sdata.s_directionalLight = QVector3D(0.7,0.7,0.7).normalized();
 
     world->Update();
+/*    if (water) {
+        water->m_position = world->m_camera.m_position;
+        water->m_position.setY(Settings::s.waterHeight);
+    }*/
 
 }
 
@@ -276,5 +280,37 @@ void MainWidget::InitMaterials()
         "/Users/leuat/Dropbox/code/code/TangyMinecraft/Assets/TangyTextures/Assets/MinecraftTextures/stone_n.png", QVector2D(5,5)
         ));
 
+}
+
+void MainWidget::calculateWaterShadow()
+{
+    auto m_lightDir = SData::sdata.s_directionalLight.normalized();
+    //    if (m_currentLod!=0)
+    //      return;
+
+    for (auto& d : water->m_mesh->data) {
+        //auto p = m_pos + QVector3D((i-size/2.0)*m_scale,(j-size/2.0)*m_scale,(k-size/2.0)*m_scale);
+        QVector3D p = (d.position + water->m_position)*0.5;//*Chunk::scale;// + 0.5*QVector3D(1,1.00,1)*size;
+        QVector3D dir = m_lightDir*Chunk::scale*2;
+        float l = 1.0;
+        p+=dir*2;
+        for (int i=0;i<Settings::s.shadowSteps;i+=1) {
+            p+=dir;
+            auto val = WorldGen::s.generate(p, false);
+
+            if (val!=0) {
+                //                l-= 0.2;
+                l*=Settings::s.shadowMultiplier;
+                if (l<Settings::s.shadowThreshold)
+                    break;
+            }
+            if (i>8) i+=3;
+            if (i>40) i+=8;
+            if (i>80) i+=8;
+        }
+        //                        float dist = ((p*2 - d.position-QVector3D(0,-0.5,0)).length()*+0.5)*0.5;
+        d.light = d.light*(l);
+    }
+    water->m_mesh->Build();
 }
 

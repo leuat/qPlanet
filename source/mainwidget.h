@@ -31,6 +31,7 @@ protected:
     void AddWalls();
     void AddChunk();
 private:
+    MeshInstance* water = nullptr;
     void Init() override;
     void Update() override;
 
@@ -41,6 +42,7 @@ private:
     void PaintGUI() override;
     void InitMaterials();
 
+    void calculateWaterShadow();
 
 
 

@@ -30,7 +30,7 @@ public:
 
     // Lighting settings
     float occlusionDistanceScale = 2.0;
-    float occlusionStrengthScale = 0.25;
+    float occlusionStrengthScale = 0.55;
 
 
     int shadowSteps = 200;
@@ -40,8 +40,8 @@ public:
 
     int noMaterials = 5;
     float waterHeight = -25.9;
-    int waterSize = 1000;
-    int waterGridSize = 16;
+    int waterSize = 512;
+    int waterGridSize = 256;
 
     bool hasWater = true;
 
