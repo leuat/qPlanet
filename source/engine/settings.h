@@ -46,7 +46,7 @@ public:
     float cloudHeight = 100.0;
 
     bool hasWater = true;
-    bool hasClouds = true;
+    bool hasClouds = false;
 
     // Landscape chunk settings
     static const int chunkSize = 32;

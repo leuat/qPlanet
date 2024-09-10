@@ -150,7 +150,6 @@ void main() {
     float NL = 0.3*ls_cloudintensity*(1 + spec + clamp((pow((dot(-N, lightDir)),1)),0.,1.));
     albedoColor*=NL*globalLight;
     albedoColor = mix(albedoColor, skyCol, I);
-
     float dist2 = length(camPos - v_pos.xyz);
  //   float dist2 = clamp(dist*0.005,0.3,1.);
     dist2 = clamp(dist2*0.0005,0.,1.);

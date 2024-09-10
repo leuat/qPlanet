@@ -246,6 +246,7 @@ void ErisWidget::paintGL()
 
     auto program = SData::sdata.shaderPrograms["atmosphere"];
     program->bind();
+    program->setUniformValue("ls_time", (float)(SData::sdata.time*0.1) );
     program->setUniformValue("sun", SData::sdata.s_directionalLight.normalized() );
     program->setUniformValue("camPos", world->m_camera.m_position);
     auto dir = (world->m_camera.m_position-world->m_camera.m_target).normalized();
