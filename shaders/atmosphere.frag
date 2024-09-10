@@ -8,13 +8,13 @@ uniform float ls_time;
 float getPerlinVal(vec3 p) {
 
     float v = 0;
-    float scale = 0.004;
+    float scale = 0.001;
     vec3 shift = vec3(10.2,0.11, 30.543);
-    p+=shift*100009.11;
-    for (int i=1;i<6;i++) {
-        v+=noise((p*i*2 + shift*i*1.11)*vec3(scale,scale*100.0,scale) + vec3(ls_time*0.2,0,0))/(2*i);
+//    p+=shift*100009.11;
+    for (int i=1;i<7;i++) {
+        v+=noise((p*i*2)*vec3(scale,scale,scale) + vec3(i*ls_time*0.1,i*ls_time*0.06,0)+shift*i*1.11)/(2*i);
     }
-    return pow(v,1);
+    return v;//pow(v,1.0);
 //    return 1.0/(v+0.5);
 //    return pow(v,0.8);
 
@@ -28,17 +28,18 @@ float getCloud(vec3 v_pos,  out float light) {
     vec3 raySunDir = normalize(v_pos - sun);
     vec3 p = v_pos;// - raySunDir*10;
     float I = 0.0;
-    light = -0.0;
-    const float density = 0.2;
+    light = 0.0;
+    const float density = 0.0;
 
 //    for (int i=0;i<10;i++) {
         I = clamp(getPerlinVal(p)+density,0,1);
+
 //        p-=raySunDir*10.0;
   //      if (v>0.0) {
             vec3 homeDir = normalize(p - camPos);
             for (int j=0;j<5;j++) {
-                light += getPerlinVal(p)*0.1;
-                p-=vec3(0,1,0)*20;
+                light += getPerlinVal(p)*0.15;
+                p+=homeDir*50;
 //                I*=0.50;
 
             }
@@ -88,7 +89,7 @@ void main( )
 //    float x = getNormal(newPos, 1.73252*ls_cloudscale*0.1, 0.005*ls_shadowscale, N, 0.05*ls_shadowscale, worldSpacePosition.y/1381.1234f + ls_time*0.0002);//getCloud(IN.uv, 1.729134);
   //  vec3 albedoColor = x*ls_cloudcolor;
     vec3 albedoColor = vec3(1,0.95,0.98)*light;
-    float globalLight = clamp(dot(n, lightDir)+0.5,0.2,1.);
+    float globalLight = clamp(dot(n, lightDir)+0.2,0.2,1.);
 
     float spec = pow(max(0.0, dot(
         reflect(-lightDir, n),
