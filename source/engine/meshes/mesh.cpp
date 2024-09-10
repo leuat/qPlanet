@@ -8,6 +8,7 @@ Mesh::Mesh(): indexBuf(QOpenGLBuffer::IndexBuffer)
 
 }
 
+
 void Mesh::Render(QOpenGLShaderProgram *program)
 {
 
@@ -25,6 +26,13 @@ void Mesh::Render(QOpenGLShaderProgram *program)
         return;
     if (!indexBuf.isCreated())
         return;
+
+    if (cull)
+        glEnable(GL_CULL_FACE);
+    else
+        glDisable(GL_CULL_FACE);
+
+
     vao.bind();
 
     arrayBuf.bind();
@@ -38,47 +46,10 @@ void Mesh::Render(QOpenGLShaderProgram *program)
         arrayBuf.release();
         return;
     }
-    // Tell OpenGL programmable pipeline how to locate vertex position data
-    int vertexLocation = program->attributeLocation("a_position");
-    program->enableAttributeArray(vertexLocation);
-    program->setAttributeBuffer(vertexLocation, GL_FLOAT, Q_OFFSETOF(VertexData, position), 3, sizeof(VertexData));
 
-
-    int normalLoc = program->attributeLocation("a_normal");
-    program->enableAttributeArray(normalLoc);
-    program->setAttributeBuffer(normalLoc, GL_FLOAT, Q_OFFSETOF(VertexData, normal), 3, sizeof(VertexData));
-
-    int lightLoc = program->attributeLocation("a_light");
-    program->enableAttributeArray(lightLoc);
-    program->setAttributeBuffer(lightLoc, GL_FLOAT, Q_OFFSETOF(VertexData, light), 3, sizeof(VertexData));
-
-    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
-    int texcoordLocation = program->attributeLocation("a_texcoord");
-    program->enableAttributeArray(texcoordLocation);
-    program->setAttributeBuffer(texcoordLocation, GL_FLOAT, Q_OFFSETOF(VertexData,texCoord), 2, sizeof(VertexData));
-
-
-    //    qDebug() << vertexLocation<<normalLoc<<texcoordLocation;
-    //  program->setAttributeBuffer("position", GL_FLOAT,0,3);
-    //  program->enableAttributeArray("position");
-
-    //    program->setAttributeBuffer(0, GL_FLOAT, Q_OFFSETOF(VertexData, position), 3, sizeof(VertexData));
-
-    if (usesTangent) {
-        int tanLoc = program->attributeLocation("a_tangent");
-        program->enableAttributeArray(tanLoc);
-        program->setAttributeBuffer(tanLoc, GL_FLOAT, Q_OFFSETOF(VertexData, tangent), 3, sizeof(VertexData));
-
-        int biLoc = program->attributeLocation("a_binormal");
-        program->enableAttributeArray(biLoc);
-        program->setAttributeBuffer(biLoc, GL_FLOAT, Q_OFFSETOF(VertexData, binormal), 3, sizeof(VertexData));
-    }
-
-
-
+    Init(program);
     glDrawElements(GL_TRIANGLES, indices.count(), GL_UNSIGNED_SHORT, 0);
-    //    glDrawArrays(GL_TRIANGLES, indices.count(), GL_UNSIGNED_SHORT);
-    //    qDebug() << indices.count();
+
     arrayBuf.release();
     indexBuf.release();
     vao.release();
@@ -198,6 +169,53 @@ void Mesh::Build()
     isBuilt = true;
 }
 
+void Mesh::Init(QOpenGLShaderProgram *program)
+{
+//    if (m_programIsInitialized)
+  //      return;
+    int vertexLocation = program->attributeLocation("a_position");
+    program->enableAttributeArray(vertexLocation);
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, Q_OFFSETOF(VertexData, position), 3, sizeof(VertexData));
+
+
+    int normalLoc = program->attributeLocation("a_normal");
+    program->enableAttributeArray(normalLoc);
+    program->setAttributeBuffer(normalLoc, GL_FLOAT, Q_OFFSETOF(VertexData, normal), 3, sizeof(VertexData));
+
+    int lightLoc = program->attributeLocation("a_light");
+    program->enableAttributeArray(lightLoc);
+    program->setAttributeBuffer(lightLoc, GL_FLOAT, Q_OFFSETOF(VertexData, light), 3, sizeof(VertexData));
+
+    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
+    int texcoordLocation = program->attributeLocation("a_texcoord");
+    program->enableAttributeArray(texcoordLocation);
+    program->setAttributeBuffer(texcoordLocation, GL_FLOAT, Q_OFFSETOF(VertexData,texCoord), 2, sizeof(VertexData));
+
+
+    //    qDebug() << vertexLocation<<normalLoc<<texcoordLocation;
+    //  program->setAttributeBuffer("position", GL_FLOAT,0,3);
+    //  program->enableAttributeArray("position");
+
+    //    program->setAttributeBuffer(0, GL_FLOAT, Q_OFFSETOF(VertexData, position), 3, sizeof(VertexData));
+
+    if (usesTangent) {
+        int tanLoc = program->attributeLocation("a_tangent");
+        program->enableAttributeArray(tanLoc);
+        program->setAttributeBuffer(tanLoc, GL_FLOAT, Q_OFFSETOF(VertexData, tangent), 3, sizeof(VertexData));
+
+        int biLoc = program->attributeLocation("a_binormal");
+        program->enableAttributeArray(biLoc);
+        program->setAttributeBuffer(biLoc, GL_FLOAT, Q_OFFSETOF(VertexData, binormal), 3, sizeof(VertexData));
+    }
+    m_programIsInitialized = true;
+
+}
+
+int Mesh::getMemoryUsage()
+{
+    return data.size()*sizeof(VertexData) + indices.size()*2 + arrayBuf.size();
+}
+
 MeshBox::MeshBox(float r, int n, bool build)
 {
 
@@ -254,7 +272,7 @@ MeshBox::MeshBox(float r, int n, bool f1, bool f2, bool f3, bool f4, bool f5, bo
 
 }
 
-void MeshBox::generatePlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int n) {
+void Mesh::generatePlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int n) {
     QVector3D dx = (p2-p1)/(n-1);
     QVector3D dy = (p4-p1)/(n-1);
     //var vloc = PoolVector3Array()
@@ -357,5 +375,19 @@ MeshRoom::MeshRoom(int n, double scale, int walls)
     BuildNormals();
     BuildTangentSpace();
     Build();
+
+}
+
+MeshPlane::MeshPlane(float r, int n, bool build)
+{
+    cull = false;
+    auto p3 = QVector3D(r,0,-r);
+    auto p4 = QVector3D(-r,0,-r);
+    auto p7 = QVector3D(r,0,r);
+    auto p8 = QVector3D(-r,0,r);
+
+    generatePlane(p8,p7,p3,p4,n);
+    if (build)
+        Build();
 
 }

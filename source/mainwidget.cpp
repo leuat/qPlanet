@@ -35,6 +35,7 @@ void MainWidget::AddWalls() {
 
 void MainWidget::AddChunk()
 {
+    /*
     Chunk::scale = Settings::s.blockScale;
     QSharedPointer<MeshChunks> mc  = QSharedPointer<MeshChunks>(new MeshChunks(Settings::s.worldSizeXZ,Settings::s.worldSizeY,getMaterialList()));
     world->m_entityList["root"]->m_children.append(mc);
@@ -43,6 +44,19 @@ void MainWidget::AddChunk()
     mc->m_cameraPointer = &world->m_camera.m_position;
     mc->m_targetPointer = &world->m_camera.m_target;
     SData::sdata.camera = &world->m_camera.m_position;
+*/
+    if (Settings::s.hasWater) {
+
+        auto wi = world->AddMeshInstance(new MeshInstance(), "water","root",
+                                         QVector3D(0,Settings::s.waterHeight,0),"watermesh",
+                                         new MaterialWater(&world->m_camera,
+                                             //                                    "/Users/leuat/Dropbox/code/code/TangyMinecraft/Assets/TangyTextures/Assets/ExportedTextures/Gnarled1/Gnarled1_Color.png", QVector2D(13,13),
+                                             //                                      "/Users/leuat/Dropbox/code/code/TangyMinecraft/Assets/TangyTextures/Assets/ExportedTextures/Gnarled1/Gnarled1_Normal.png", QVector2D(13,13)
+                                             "/Users/leuat/Dropbox/code/code/TangyMinecraft/Assets/TangyTextures/Assets/MinecraftTextures/stone.png", QVector2D(2,2),
+                                             "/Users/leuat/Dropbox/code/code/TangyMinecraft/Assets/TangyTextures/Assets/MinecraftTextures/stone_n.png", QVector2D(2,2)
+                                             )
+                                          );
+    }
 
 }
 
@@ -181,8 +195,8 @@ void MainWidget::Update()
 void MainWidget::initMeshes()
 {
     ErisWidget::initMeshes();
-    world->m_meshes["woman"] = QSharedPointer<MeshObject>(new MeshObject("/Users/leuat/code/qPlanet/objects/female.obj",0.1, QVector3D(0,-5,0),true));
-    world->m_meshes["car"] = QSharedPointer<MeshObject>(new MeshObject("/Users/leuat/code/qPlanet/objects/car.obj",1.0, QVector3D(0,0,0),true));
+//    world->m_meshes["woman"] = QSharedPointer<MeshObject>(new MeshObject("/Users/leuat/code/qPlanet/objects/female.obj",0.1, QVector3D(0,-5,0),true));
+//    world->m_meshes["car"] = QSharedPointer<MeshObject>(new MeshObject("/Users/leuat/code/qPlanet/objects/car.obj",1.0, QVector3D(0,0,0),true));
     //  world->m_meshes["alien"] = QSharedPointer<MeshObject>(new MeshObject("/Users/leuat/code/qPlanet/objects/alien.obj",1.0, QVector3D(0,0,0),true));
     /*    world->m_meshes["teapot"] = QSharedPointer<MeshObject>(new MeshObject("/Users/leuat/code/qPlanet/objects/teapot.obj",0.4, QVector3D(0,-2,0),true));
     world->m_meshes["fox"] = QSharedPointer<MeshObject>(new MeshObject("/Users/leuat/code/qPlanet/objects/fox.obj",0.2, QVector3D(0,-2,0),false));

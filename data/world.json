@@ -2,7 +2,7 @@
     "worldSettings": {
         "light" : {
             "occlusionDistanceScale" : 2.0,
-            "occlusionStrengthScale" : 0.25,
+            "occlusionStrengthScale" : 0.35,
             "shadowMultiplier" : 0.85,
             "shadowSteps" : 200,
             "shadowThreshold" : 0.15
@@ -23,6 +23,7 @@
             "id": 0
         },
         {
+            "material_":"regular_block",
             "material":"textured_block",
             "name":"grass",
             "texture":"grass_block_top",
@@ -36,6 +37,7 @@
             "id": 2
         },
         {
+            "material_":"regular_block",
             "material":"textured_block",
             "name":"dirt",
             "texture":"dirt",
@@ -55,6 +57,7 @@
             "id": 5
         },
         {
+            "material_":"regular_block",
             "material":"textured_block",
             "name":"stone",
             "texture":"cobblestone",

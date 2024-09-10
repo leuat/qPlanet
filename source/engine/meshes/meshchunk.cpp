@@ -59,9 +59,8 @@ void MeshChunk::calculateAmbientOcclusion()
 */
                          )*Settings::s.occlusionStrengthScale;
 
-        //                        float dist = ((p*2 - d.position-QVector3D(0,-0.5,0)).length()*+0.5)*0.5;
-//        float l = 1.0;
-        if (l>1.0) l = 1.0;
+        l = std::min(std::max(l, 0.0f), 1.0f);
+
         d.light = QVector3D(1.0, 1.0, 1.0)*(l);
     }
 
@@ -196,6 +195,8 @@ int MeshChunk::getChunkIndex(const int scale)
 
 void MeshChunk::GenerateMesh()
 {
+    workData.clear();
+    workIndices.clear();
     const int sz = Chunk::size;
     const int size = Chunk::size;
     const float s = Chunk::scale;

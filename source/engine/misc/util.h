@@ -180,6 +180,9 @@ public:
 
     static void SaveByteArray(QByteArray& data, QString file);
 
+
+    static void SaveTextFile(QString fname, QString text);
+
     static QString fromStringList(QStringList lst);
 
     static int NumberFromStringHex(QString s) {

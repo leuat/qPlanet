@@ -4,7 +4,7 @@ TARGET = qtPlanet
 TEMPLATE = app
 QMAKE_CXXFLAGS += -I$$PWD/imgui
 
-CONFIG += sanitizer sanitizer_address
+#CONFIG += sanitizer sanitizer_address
 
 win32-msvc*{
     QMAKE_CXXFLAGS += -openmp

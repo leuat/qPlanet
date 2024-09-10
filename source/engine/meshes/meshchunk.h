@@ -33,6 +33,7 @@ public:
     int m_shadowTick = 0;
     int m_currentLod = 1;
     QVector3D m_lightDir;
+
     int getChunkIndex(const int scale);
     void Calculate();
     void calculateAmbientOcclusion();

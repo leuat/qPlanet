@@ -172,3 +172,45 @@ void MaterialNormal::bind(QMatrix4x4 mvp, const QMatrix3x3 rot)
     }
 
 }
+
+MaterialWater::MaterialWater(Camera* camera, QString textureFile, QVector2D scale, QString textureNormal, QVector2D normalScale)
+{
+    m_camera = camera;
+    uvScale = scale;
+    uvScaleNormalMap = normalScale;
+
+    program = SData::sdata.shaderPrograms["water"].get();
+
+    texture = loadTexture(textureFile);
+    normal_map = loadTexture(textureNormal);
+
+}
+
+void MaterialWater::bind(QMatrix4x4 mvp, const QMatrix3x3 rot)
+{
+    program->bind();
+    setMatrices(mvp,rot);
+    setDefaults(mData);
+    SetEye();
+    program->setUniformValue("tex_scale", uvScale);
+    program->setUniformValue("uv_scale", uvScale);
+    program->setUniformValue("sun", SData::sdata.s_directionalLight.normalized() );
+    program->setUniformValue("camPos", m_camera->m_position);
+    auto dir = (m_camera->m_position-m_camera->m_target).normalized();
+    program->setUniformValue("camForward", dir);
+    program->setUniformValue("camRight", m_camera->m_up.normalized());
+    program->setUniformValue("tex_scale", uvScale);
+    program->setUniformValue("uv_scale", uvScale);
+    if (normal_map!=nullptr) {
+        //      glBindTexture(GL_TEXTURE_2D, normal_map->textureId());
+        normal_map->bind(1);
+        program->setUniformValue("tex2", 1);
+    }
+    if (texture!=nullptr) {
+        texture->bind(0);
+        //        glBindTexture(GL_TEXTURE_2D, texture->textureId());
+        program->setUniformValue("tex1", 0);
+    }
+
+}
+

@@ -32,6 +32,8 @@ public:
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
     bool isBuilt = false;
+    bool cull = true;
+
 
     QVector<QSharedPointer<Mesh>> children;
 
@@ -44,6 +46,12 @@ public:
 
     void Build();
 
+    void Init(QOpenGLShaderProgram *program);
+    bool m_programIsInitialized = false;
+
+    int getMemoryUsage();
+    void generatePlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int n);
+
     Mesh();
 };
 
@@ -51,7 +59,12 @@ class MeshBox : public Mesh {
 public:
     MeshBox(float r, int n, bool build=true);
     MeshBox(float r, int n, bool f1, bool f2, bool f3, bool f4, bool f5, bool f6, QVector3D shift);
-    void generatePlane(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D p4, int n);
+
+};
+
+class MeshPlane : public Mesh {
+public:
+    MeshPlane(float r, int n, bool build=true);
 
 };
 

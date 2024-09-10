@@ -26,7 +26,7 @@ public:
     QVector3D s_eye_direction;
     QVector2D s_mpos;
     SimplexNoise sn;
-    QSharedPointer<QOpenGLShaderProgram> LinkShader(QString vert, QString frag);
+    QSharedPointer<QOpenGLShaderProgram> LinkShader(QString vert, QString frag, QString includeFrag);
 
     void CompileShaders();
 

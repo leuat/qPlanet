@@ -39,6 +39,11 @@ public:
 
 
     int noMaterials = 5;
+    float waterHeight = -5;
+    int waterSize = 1000;
+    int waterGridSize = 16;
+
+    bool hasWater = true;
 
     // Landscape chunk settings
     static const int chunkSize = 32;

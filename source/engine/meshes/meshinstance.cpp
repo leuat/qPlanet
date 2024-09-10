@@ -191,7 +191,7 @@ void MeshChunks::Render(QMatrix4x4 projection)
     UpdateAll();
 
     m_renderChunks = m_chunks;
-
+    int memSize = 0;
     for (int type = 1; type <Settings::s.noMaterials; type++ ) {
         auto material = m_materials[type];
 
@@ -203,6 +203,7 @@ void MeshChunks::Render(QMatrix4x4 projection)
         int ign = 0;
 
         for (auto& v : m_renderChunks) {
+            memSize+=v->m_meshChunks[type]->getMemoryUsage();
             if (v->m_ignore)
                 continue;
 
@@ -231,7 +232,9 @@ void MeshChunks::Render(QMatrix4x4 projection)
 //        qDebug() << ign/(float)m_chunks.count() << m_chunks.count();
     }
 
-  //  qDebug() << m_ignoreList.count() <<m_chunks.count() << m_tmpChunks.count() << m_renderChunks.count() << m_queue.count();
+    qDebug() << m_ignoreList.count() <<m_chunks.count() << m_tmpChunks.count() << m_renderChunks.count() << m_queue.count() << "chunksdata : " << ChunkData::s.m_data.count() << ChunkData::s.m_newEntities.count() <<ChunkData::s.m_newEntitiesPos.count();
+    qDebug() << m_chunks.count()*sizeof(Chunk)/1024 << m_chunks.count()*sizeof(MeshChunk)/1024;
+    qDebug() << "VBOS"  << memSize/1024/1024.0;
     if (m_isReady == false)
         m_isReady = true;
 
@@ -267,7 +270,6 @@ void MeshChunks::ManagedFlaggedForRegenChunks()
 
 void MeshChunks::ManageQueue()
 {
-
     for (auto& v : m_queue) {
         m_chunks.append(QSharedPointer<MeshChunkAll>(new MeshChunkAll(v)));
         m_chunks.last()->setAutoDelete(false);

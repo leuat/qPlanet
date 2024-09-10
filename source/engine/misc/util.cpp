@@ -398,6 +398,29 @@ void Util::SaveByteArray(QByteArray &data, QString file) {
 
 }
 
+void Util::SaveTextFile(QString fname, QString text)
+{
+    QFileInfo info(fname);
+    QString d = info.dir().absolutePath();
+    QDir dir(d);
+    if (!dir.exists())
+        dir.mkpath(d);
+
+
+
+    if (QFile::exists(fname)) {
+        QFile::remove(fname);
+    }
+    if (fname=="")
+        return;
+    QFile file(fname);
+    file.open(QIODevice::WriteOnly| QIODevice::Text);
+    QTextStream f(&file);
+    f<<text;
+    file.close();
+
+}
+
 QString Util::fromStringList(QStringList lst)
 {
     QString ret;

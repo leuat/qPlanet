@@ -20,5 +20,8 @@
         <file>shaders/block.vert</file>
         <file>shaders/block_texture.frag</file>
         <file>shaders/block_texture.vert</file>
+        <file>shaders/common.frag</file>
+        <file>shaders/water.frag</file>
+        <file>shaders/water.vert</file>
     </qresource>
 </RCC>

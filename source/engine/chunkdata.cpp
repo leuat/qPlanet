@@ -26,7 +26,7 @@ int WorldGen::generate(QVector3D pos, bool init)
     float gh = sn.getMultiFractal(pos*s/6.1,1.0, 4,2.0,1.0,2.0,0.0)*8*amp;
     float ls1 = sn.getMultiFractal(pos*s/20.3,1.0, 4,2.0,1.0,2.0,0.0)*8*amp;
     float ls2 = sn.noise(pos.z()*s/15.0, pos.x()*s/16.23)*1.9*amp;
-    float trees = sn.noise(pos.z()*s*14.31, pos.x()*s*14.41);
+    float trees = sn.noise(pos.z()*s*24.31, pos.x()*s*24.41);
     h+=gh-12+ls1;
     auto oh = (h-6)*1.1;
     h*=ls2;
@@ -207,12 +207,12 @@ void Chunk::set(int i, int j, int k, unsigned short d)
 }
 
 void ChunkTree::Grow() {
-    int height = rand()%4 +4;
+    int height = rand()%3 +2;
 //    qDebug() << "newtree "<<index;
     for (int i=0;i<height;i++) {
-        ChunkData::s.set(index + QVector3D(0,(i)*Chunk::scale,0),1);
+        ChunkData::s.set(index + QVector3D(0,(i)*Chunk::scale,0),Settings::s.blocks["dirt"]->m_id);
     }
-    int bushHeight = height + rand()%4;
+    int bushHeight = height + rand()%3;
     for (int i=0;i<bushHeight;i++) {
         for (int j=0;j<bushHeight;j++)
             for (int k=0;k<bushHeight;k++) {

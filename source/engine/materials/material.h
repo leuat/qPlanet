@@ -34,6 +34,7 @@ public:
 
     Material();
 
+    Camera* m_camera;
 
     void release();
     void setMatrices(const QMatrix4x4& mvp, const QMatrix3x3& rot);
@@ -57,14 +58,12 @@ public:
 
 class MaterialBlock : public Material {
 public:
-    Camera* m_camera;
     MaterialBlock(Camera* camera);
     void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
 };
 
 class MaterialBlockTexture : public MaterialBlock {
 public:
-    Camera* m_camera;
     MaterialBlockTexture(Camera* camera);
     void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
 };
@@ -81,6 +80,11 @@ public:
     void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
 };
 
+class MaterialWater : public Material {
+public:
+    MaterialWater(Camera* camera,QString textureFile, QVector2D scale,QString textureNormal, QVector2D normalScale);
+    void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
+};
 
 
 #endif // MATERIAL_H
