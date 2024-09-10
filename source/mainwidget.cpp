@@ -52,11 +52,23 @@ void MainWidget::AddChunk()
                                          new MaterialWater(&world->m_camera,
                                              //                                    "/Users/leuat/Dropbox/code/code/TangyMinecraft/Assets/TangyTextures/Assets/ExportedTextures/Gnarled1/Gnarled1_Color.png", QVector2D(13,13),
                                              //                                      "/Users/leuat/Dropbox/code/code/TangyMinecraft/Assets/TangyTextures/Assets/ExportedTextures/Gnarled1/Gnarled1_Normal.png", QVector2D(13,13)
-                                             "/Users/leuat/Dropbox/code/code/TangyMinecraft/Assets/TangyTextures/Assets/MinecraftTextures/stone.png", QVector2D(2,2),
-                                             "/Users/leuat/Dropbox/code/code/TangyMinecraft/Assets/TangyTextures/Assets/MinecraftTextures/stone_n.png", QVector2D(2,2)
+                                             "", QVector2D(2,2),
+                                             "", QVector2D(2,2)
                                              )
                                           );
     }
+    if (Settings::s.hasWater) {
+
+        water = world->AddMeshInstance(new MeshInstance(), "clouds","root",
+                                       QVector3D(0,Settings::s.cloudHeight,0),"cloudmesh",
+                                       new MaterialClouds(&world->m_camera,
+                                                         "data/textures/clouds.png", QVector2D(1,1),
+                                                         "", QVector2D(2,2)
+                                                         )
+                                       );
+    }
+    //
+
 //    calculateWaterShadow();
 }
 

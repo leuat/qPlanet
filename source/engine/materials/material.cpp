@@ -182,8 +182,8 @@ MaterialWater::MaterialWater(Camera* camera, QString textureFile, QVector2D scal
 
     program = SData::sdata.shaderPrograms["water"].get();
 
-    texture = loadTexture(textureFile);
-    normal_map = loadTexture(textureNormal);
+ //   texture = loadTexture(textureFile);
+   // normal_map = loadTexture(textureNormal);
 
 }
 
@@ -214,4 +214,54 @@ void MaterialWater::bind(QMatrix4x4 mvp, const QMatrix3x3 rot)
     }
 
 }
+MaterialClouds::MaterialClouds(Camera* camera, QString textureFile, QVector2D scale, QString textureNormal, QVector2D normalScale)
+{
+    m_camera = camera;
+    uvScale = scale;
+    uvScaleNormalMap = normalScale;
+
+    program = SData::sdata.shaderPrograms["clouds"].get();
+
+    texture = loadTexture(textureFile);
+//    normal_map = loadTexture(textureNormal);
+
+}
+
+void MaterialClouds::bind(QMatrix4x4 mvp, const QMatrix3x3 rot)
+{
+    program->bind();
+    setMatrices(mvp,rot);
+    setDefaults(mData);
+    SetEye();
+    program->setUniformValue("tex_scale", uvScale);
+    program->setUniformValue("uv_scale", uvScale);
+    program->setUniformValue("sun", SData::sdata.s_directionalLight.normalized() );
+    program->setUniformValue("camPos", m_camera->m_position);
+    auto dir = (m_camera->m_position-m_camera->m_target).normalized();
+    program->setUniformValue("camForward", dir);
+    program->setUniformValue("camRight", m_camera->m_up.normalized());
+    program->setUniformValue("tex_scale", uvScale);
+    program->setUniformValue("uv_scale", uvScale);
+    if (normal_map!=nullptr) {
+        //      glBindTexture(GL_TEXTURE_2D, normal_map->textureId());
+        normal_map->bind(1);
+        program->setUniformValue("tex2", 1);
+    }
+    if (texture!=nullptr) {
+        texture->bind(0);
+        //        glBindTexture(GL_TEXTURE_2D, texture->textureId());
+        program->setUniformValue("tex1", 0);
+    }
+    program->setUniformValue("ls_time", (float)(SData::sdata.time*cloudTimeScale*0.025));
+    program->setUniformValue("ls_cloudscale", cloudScale);
+    program->setUniformValue("ls_cloudscattering", cloudScattering);
+    program->setUniformValue("ls_cloudintensity", cloudIntensity);
+    program->setUniformValue("ls_cloudsharpness", cloudSharpness);
+    program->setUniformValue("ls_shadowscale", shadowScale);
+    program->setUniformValue("ls_cloudthickness", cloudThickness);
+    program->setUniformValue("ls_cloudcolor", cloudColor);
+    program->setUniformValue("ls_distScale", distScale);
+
+}
+
 

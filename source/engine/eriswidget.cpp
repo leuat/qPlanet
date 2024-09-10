@@ -137,6 +137,8 @@ void ErisWidget::initMeshes()
     world->m_meshes["box"] = QSharedPointer<MeshBox>(new MeshBox(1,2));
     if (Settings::s.hasWater)
         world->m_meshes["watermesh"] = QSharedPointer<MeshPlane>(new MeshPlane(Settings::s.waterSize,Settings::s.waterGridSize));
+    if (Settings::s.hasClouds)
+        world->m_meshes["cloudmesh"] = QSharedPointer<MeshPlane>(new MeshPlane(16000,8));
 //    world->m_meshes["chunk"] = QSharedPointer<MeshChunk>(new MeshChunk(QVector3D(0,0,0),1));
 }
 

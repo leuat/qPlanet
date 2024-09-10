@@ -23,5 +23,7 @@
         <file>shaders/common.frag</file>
         <file>shaders/water.frag</file>
         <file>shaders/water.vert</file>
+        <file>shaders/clouds.vert</file>
+        <file>shaders/clouds.frag</file>
     </qresource>
 </RCC>

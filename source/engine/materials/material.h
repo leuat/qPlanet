@@ -86,5 +86,22 @@ public:
     void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
 };
 
+class MaterialClouds : public Material {
+public:
+
+    float cloudTimeScale = 2;
+    float cloudScale = 4;
+    float cloudIntensity = 4;
+
+    float cloudScattering = 0.6f;
+    float cloudSharpness = 0.75f;
+    float cloudThickness = 1.0f;
+
+    float shadowScale = 0.75f;
+    float distScale = 10.0f;
+    QVector3D cloudColor = QVector3D(1,0.95f,0.98f);
+    MaterialClouds(Camera* camera,QString textureFile, QVector2D scale,QString textureNormal, QVector2D normalScale);
+    void bind(QMatrix4x4 mvp, const QMatrix3x3 rot) override;
+};
 
 #endif // MATERIAL_H

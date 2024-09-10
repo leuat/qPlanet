@@ -43,7 +43,10 @@ public:
     int waterSize = 512;
     int waterGridSize = 256;
 
+    float cloudHeight = 100.0;
+
     bool hasWater = true;
+    bool hasClouds = true;
 
     // Landscape chunk settings
     static const int chunkSize = 32;

@@ -40,6 +40,7 @@ void SData::CompileShaders()
     shaderPrograms["block"] = LinkShader(":/shaders/block.vert",":/shaders/block.frag",":/shaders/common.frag");
     shaderPrograms["textured_block"] = LinkShader(":/shaders/block_texture.vert",":/shaders/block_texture.frag",":/shaders/common.frag");
     shaderPrograms["water"] = LinkShader(":/shaders/water.vert",":/shaders/water.frag",":/shaders/common.frag");
+    shaderPrograms["clouds"] = LinkShader(":/shaders/clouds.vert",":/shaders/clouds.frag",":/shaders/common.frag");
 
 }
 
