@@ -40,9 +40,10 @@ float getPerlinVal(vec3 p) {
     vec3 shift = vec3(10.2,0.11, 30.543);
     p+=shift*100009.11;
     for (int i=1;i<10;i++) {
-        v+=noise((p*i*2 + shift*i*1.11)*scale + vec3(ls_time*0.5,0,0))/(2*i);
+        v+=noise((p*i*2 + shift*i*1.11)*vec3(scale,scale*10.0,scale) + vec3(ls_time*0.5,0,0))/(2*i);
     }
-    return pow(v,0.5);
+    return 1.0/(v+0.5);
+//    return pow(v,0.8);
 
 
 }
@@ -52,24 +53,27 @@ float getPerlinVal(vec3 p) {
 float getCloud(float scale, float disp, out float light) {
 
     vec3 raySunDir = normalize(v_pos - sun);
-    vec3 p = v_pos - raySunDir*10;
+    vec3 p = v_pos;// - raySunDir*10;
     float I = 0.0;
-    light = 0.5;
-    for (int i=0;i<10;i++) {
-        float v = getPerlinVal(p);
-        p-=raySunDir;
-        if (v>0.0) {
-            I = v;
+    light = -1.0;
+    const float density = 0;
+
+//    for (int i=0;i<10;i++) {
+        I = clamp(getPerlinVal(p)+density,0,1);
+//        p-=raySunDir*10.0;
+  //      if (v>0.0) {
             vec3 homeDir = normalize(p - camPos);
             for (int j=0;j<5;j++) {
-                light += getPerlinVal(p)*0.05;
-                p-=homeDir*1.0;
+                light += getPerlinVal(p)*0.4;
+                p-=raySunDir*20;
             }
-            i = 10;
-        }
+
+      //      i = 10;
+    //        break;
+    //    }
         //if (getPerlinVal(p)>0.2)
         //    I*=0.9;
-    }
+  //  }
     //light = clamp(light,0,1);
 //    return clamp( pow(ls_cloudscattering/I, ls_cloudsharpness),0,1.0);
     return I;
@@ -150,7 +154,7 @@ void main() {
     float dist2 = length(camPos - v_pos.xyz);
  //   float dist2 = clamp(dist*0.005,0.3,1.);
     dist2 = clamp(dist2*0.0005,0.,1.);
-    albedoColor = albedoColor*(1-dist2) + vec3(0.40,0.45,0.5)*(dist2);
+    albedoColor = albedoColor*(1-dist2) + vec3(0.5,0.45,0.2)*(dist2);
 
 
     fragColor = vec4(albedoColor,1.0);
