@@ -9,7 +9,7 @@
 
         },
         "world" : {
-            "worldSizeXZ" : 16,
+            "worldSizeXZ" : 15,
             "worldSizeY" : 6,
             "blockScale" : 0.2
 

@@ -222,6 +222,8 @@ void main() {
     float dist = length(camPos - v_pos.xyz);
  //   float dist2 = clamp(dist*0.005,0.3,1.);
     dist = clamp(dist*0.005,0.,1.);
+
+
     color = color*(1.0-dist) + skyCol*dist;
     // post
     //fragColor = vec4(pow(color,vec3(0.65)), 0.6);
