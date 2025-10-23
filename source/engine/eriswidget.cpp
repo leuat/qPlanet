@@ -382,12 +382,13 @@ bool ErisWidget::eventFilter(QObject *obj, QEvent *event)
             SData::sdata.s_mpos = QVector2D(2*m.x()/(float)width()-1,1- 2*m.y()/(float)height());
         else SData::sdata.s_mpos = QVector2D(-1000,-1000);
         m_mx +=(m_mousePos-m_prevPos);
-/*        auto c = cursor();
+/*
+        auto c = cursor();
         c.setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
 
         setCursor(c);
 */
- //       world->m_camera.RotateHorisontal(m_mx.x());
+//        world->m_camera.RotateHorisontal(m_mx.x());
     }
     return false;
 }

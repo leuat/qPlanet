@@ -26,6 +26,7 @@ SOURCES += \
     imgui/imgui_draw.cpp \
     imgui/imgui_tables.cpp \
     imgui/imgui_widgets.cpp \
+    source/curvesmoothing.cpp \
     source/engine/camera.cpp \
     source/engine/chunkdata.cpp \
     source/engine/entity.cpp \
@@ -50,10 +51,13 @@ SOURCES += \
     source/engine/settings.cpp \
     source/engine/widget/glwidget.cpp \
     source/engine/world.cpp \
+    source/ltriangles.cpp \
     source/main.cpp \
     source/mainwidget.cpp \
     source/misc/cinifile.cpp \
-    source/mymeshes/rotboxtest.cpp
+    source/mymeshes/rotboxtest.cpp \
+    source/shape.cpp \
+    source/spline.cpp
 
 HEADERS += \
     imgui/ImGuiRenderer.h \
@@ -64,6 +68,7 @@ HEADERS += \
     imgui/imstb_rectpack.h \
     imgui/imstb_textedit.h \
     imgui/imstb_truetype.h \
+    source/curvesmoothing.h \
     source/engine/camera.h \
     source/engine/chunkdata.h \
     source/engine/entity.h \
@@ -92,9 +97,12 @@ HEADERS += \
     source/engine/settings.h \
     source/engine/widget/glwidget.h \
     source/engine/world.h \
+    source/ltriangles.h \
     source/mainwidget.h \
     source/misc/cinifile.h \
-    source/mymeshes/rotboxtest.h
+    source/mymeshes/rotboxtest.h \
+    source/shape.h \
+    source/spline.h
 
 RESOURCES += \
     resources.qrc \
